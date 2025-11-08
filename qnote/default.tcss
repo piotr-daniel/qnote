@@ -1,0 +1,35 @@
+Header {
+    color: white;
+}
+
+Details {
+    border: round green;
+    height: 65%;
+}
+
+Sidebar {
+    border: round yellow;
+    height: 100%;
+}
+
+Stats {
+    border: round red;
+    height: 35%;
+}
+
+TextArea .text-area--cursor {
+    background: green;
+}
+
+.column {
+    /*border: solid red;*/
+    padding: 1 1;
+}
+
+#left-pane {
+    width: 1fr;
+}
+
+#right-pane {
+    width: 2fr;
+}
