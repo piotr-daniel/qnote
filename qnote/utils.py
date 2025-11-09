@@ -1,4 +1,5 @@
 import json
+import logging
 import uuid
 import datetime
 from pathlib import Path
@@ -43,3 +44,14 @@ def add_note(title: str, content: str, tags=None):
     notes.append(new_note)
     save_notes(notes)
     return new_note
+
+
+def save_note(id: str, title: str, content: str, tags=None):
+    """Save a note to data.json."""
+    notes = load_notes()
+    for idx, note in enumerate(notes):
+        if note["id"] == id:
+            notes[idx]["title"] = title
+            notes[idx]["content"] = content
+            break
+    save_notes(notes)

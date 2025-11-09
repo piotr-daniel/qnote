@@ -1,9 +1,10 @@
+from idlelib.tree import TreeNode
+
 from textual.app import App, ComposeResult
-from textual.containers import Horizontal, Vertical, HorizontalGroup, VerticalScroll, VerticalGroup
-from textual.message import Message
-from textual.reactive import reactive
-from textual.widgets import Button, Digits, Footer, Header, Input, Static, Tree
-from widgets.widgets import Details, Sidebar
+from textual.containers import Horizontal, Vertical, VerticalScroll
+
+from textual.widgets import Footer, Header
+from widgets.widgets import Details, Sidebar, Stats
 
 
 class QnoteApp(App):
@@ -15,17 +16,22 @@ class QnoteApp(App):
 
     def compose(self) -> ComposeResult:
         """Create child widgets for the app."""
+
         yield Header()
 
         with Horizontal():
             with VerticalScroll(classes="column", id="left-pane"):
-                yield Sidebar()
+                yield Sidebar("Notes")
             with Vertical(classes="column", id="right-pane"):
                 yield Stats()
                 yield Details()
 
-        # yield TextArea("Test text")
         yield Footer()
+
+    def on_tree_node_highlighted(self, node:TreeNode) -> None:  #TODO: handle NoneType when selecting parents
+        if not node.node.children:
+            self.query_one(Details).disabled = False
+            self.query_one(Details).load_data(node.node.data)
 
     def action_toggle_dark(self) -> None:
         """An action to toggle dark mode."""
