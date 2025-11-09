@@ -1,14 +1,15 @@
 from idlelib.tree import TreeNode
-
 from textual.app import App, ComposeResult
 from textual.containers import Horizontal, Vertical, VerticalScroll
-
 from textual.widgets import Footer, Header
-from widgets.widgets import Details, Sidebar, Stats
+from utils import init_db, get_notes
+from widgets import Details, Sidebar, Stats
 
 
 class QnoteApp(App):
     """A Textual app to easily take and manage notes."""
+
+    init_db()
 
     CSS_PATH = "default.tcss"
     TITLE = "QNote"
@@ -18,6 +19,7 @@ class QnoteApp(App):
         """Create child widgets for the app."""
 
         yield Header()
+        yield Footer()
 
         with Horizontal():
             with VerticalScroll(classes="column", id="left-pane"):
@@ -26,9 +28,8 @@ class QnoteApp(App):
                 yield Stats()
                 yield Details()
 
-        yield Footer()
 
-    def on_tree_node_highlighted(self, node:TreeNode) -> None:  #TODO: handle NoneType when selecting parents
+    def on_tree_node_highlighted(self, node:TreeNode) -> None:
         if not node.node.children:
             self.query_one(Details).disabled = False
             self.query_one(Details).load_data(node.node.data)

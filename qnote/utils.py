@@ -1,57 +1,53 @@
-import json
 import logging
-import uuid
-import datetime
+import sqlite3
 from pathlib import Path
 
-
 DATA_DIR = Path.home() / ".qnote"
-DATA_FILE = DATA_DIR / "data.json"
-
-def load_notes():
-    """Load all notes from the JSON file. Return a list."""
-    if not DATA_FILE.exists():
-        return []
-    try:
-        with open(DATA_FILE, "r", encoding="utf-8") as f:
-            return json.load(f)
-    except json.JSONDecodeError:
-        # In case of file corruption or empty file
-        return []
-
-def save_notes(notes):
-    """Write notes safely to JSON file. Create file if it doesn't exist."""
-    DATA_DIR.mkdir(parents=True, exist_ok=True)
-    tmp_file = DATA_FILE.with_suffix(".tmp")
-
-    with open(tmp_file, "w", encoding="utf-8") as f:
-        json.dump(notes, f, indent=2, ensure_ascii=False)
-
-    tmp_file.replace(DATA_FILE)  # Atomic replace
-
-def add_note(title: str, content: str, tags=None):
-    """Add a new note to data.json."""
-    #  title to be auto generated with first few words or later edited by user
-    #  future dev: tags to be auto generated
-    notes = load_notes()
-    new_note = {
-        "id": str(uuid.uuid4()),
-        "title": title,
-        "content": content,
-        "tags": tags or [],
-        "created": datetime.datetime.now().isoformat(timespec="seconds"),
-    }
-    notes.append(new_note)
-    save_notes(notes)
-    return new_note
+DATA_FILE = DATA_DIR / "data.db"
 
 
-def save_note(id: str, title: str, content: str, tags=None):
-    """Save a note to data.json."""
-    notes = load_notes()
-    for idx, note in enumerate(notes):
-        if note["id"] == id:
-            notes[idx]["title"] = title
-            notes[idx]["content"] = content
-            break
-    save_notes(notes)
+def get_connection():
+    return sqlite3.connect(DATA_FILE)
+
+
+def init_db():
+    """Initialize the database."""
+    with get_connection() as conn:
+        conn.execute("""
+        CREATE TABLE IF NOT EXISTS notes (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT NOT NULL,
+            content TEXT NOT NULL,
+            tags TEXT,
+            created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+        """)
+
+
+def add_note(title: str, content: str, tags: list=None):
+    """Add a new note to database."""
+    tags_str = ",".join(tags) if tags else None
+    with get_connection() as conn:
+        conn.execute(
+            "INSERT INTO notes (title, content, tags) VALUES (?, ?, ?)",
+            (title, content, tags_str)
+        )
+
+
+def delete_note(note_id):
+    """Delete note from database."""
+    with get_connection() as conn:
+        conn.execute("DELETE FROM notes WHERE id = ?", (note_id,))
+
+
+def update_note(note_id, new_content):
+    """Update the content of a note."""
+    with get_connection() as conn:
+        conn.execute("UPDATE notes SET content = ? WHERE id = ?", (new_content, note_id))
+
+
+def get_notes():
+    """Get all notes from database."""
+    with get_connection() as conn:
+        cursor = conn.execute("SELECT id, title, content, tags, created FROM notes ORDER BY created DESC")
+        return cursor.fetchall()
