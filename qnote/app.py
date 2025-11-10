@@ -2,7 +2,7 @@ from idlelib.tree import TreeNode
 from textual.app import App, ComposeResult
 from textual.containers import Horizontal, Vertical, VerticalScroll
 from textual.widgets import Footer, Header
-from utils import init_db, get_notes
+from utils import init_db, get_notes, add_note
 from widgets import Details, Sidebar, Stats
 
 
@@ -13,7 +13,9 @@ class QnoteApp(App):
 
     CSS_PATH = "default.tcss"
     TITLE = "QNote"
-    BINDINGS = [("d", "toggle_dark", "Toggle dark mode")]
+    BINDINGS = [
+        ("d", "toggle_dark", "Toggle dark mode"),
+    ]
 
     def compose(self) -> ComposeResult:
         """Create child widgets for the app."""
@@ -30,9 +32,18 @@ class QnoteApp(App):
 
 
     def on_tree_node_highlighted(self, node:TreeNode) -> None:
+        """Show details of note highlighted note."""
         if not node.node.children:
-            self.query_one(Details).disabled = False
-            self.query_one(Details).load_data(node.node.data)
+            try:
+                self.query_one(Details).disabled = False
+                self.query_one(Details).load_data(node.node.data)
+            except AttributeError as e:
+                self.query_one(Details).text = "parent empty"
+                #TODO: add logging here
+        else:
+            self.query_one(Details).disabled = True
+            self.query_one(Details).text = ""
+
 
     def action_toggle_dark(self) -> None:
         """An action to toggle dark mode."""

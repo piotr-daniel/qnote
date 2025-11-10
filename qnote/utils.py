@@ -18,19 +18,20 @@ def init_db():
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             title TEXT NOT NULL,
             content TEXT NOT NULL,
+            category TEXT NOT NULL,
             tags TEXT,
             created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
         """)
 
 
-def add_note(title: str, content: str, tags: list=None):
+def add_note(title: str, content: str, category: str="General", tags: list=None):
     """Add a new note to database."""
     tags_str = ",".join(tags) if tags else None
     with get_connection() as conn:
         conn.execute(
-            "INSERT INTO notes (title, content, tags) VALUES (?, ?, ?)",
-            (title, content, tags_str)
+            "INSERT INTO notes (title, content, category, tags) VALUES (?, ?, ?, ?)",
+            (title, content, category, tags_str)
         )
 
 
@@ -49,5 +50,12 @@ def update_note(note_id, new_content):
 def get_notes():
     """Get all notes from database."""
     with get_connection() as conn:
-        cursor = conn.execute("SELECT id, title, content, tags, created FROM notes ORDER BY created DESC")
+        cursor = conn.execute("SELECT * FROM notes ORDER BY created DESC")
+        return cursor.fetchall()
+
+
+def get_categories():
+    """Get distinct categories from database."""
+    with get_connection() as conn:
+        cursor = conn.execute("SELECT DISTINCT category FROM notes ORDER BY created DESC")
         return cursor.fetchall()
