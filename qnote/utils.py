@@ -25,7 +25,7 @@ def init_db():
         """)
 
 
-def add_note(title: str, content: str, category: str="General", tags: list=None):
+def add_note(title: str, content: str, category: str, tags: list = None):
     """Add a new note to database."""
     tags_str = ",".join(tags) if tags else None
     with get_connection() as conn:
@@ -55,9 +55,11 @@ def get_notes():
 
 
 def get_categories():
-    """Get distinct categories from database."""
+    """Get distinct categories from database. If there are no categories, return General as default."""
     with get_connection() as conn:
         cursor = conn.execute("SELECT DISTINCT category FROM notes ORDER BY created DESC")
         categories = [c[0] for c in cursor.fetchall()]
+        if not categories:
+            categories.append("General")
         categories.sort()
         return categories

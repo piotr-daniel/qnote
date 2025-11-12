@@ -1,8 +1,8 @@
+from textual.app import ComposeResult
 from textual.containers import Grid
-from textual.message import Message
+from textual.screen import ModalScreen
 from textual.reactive import reactive
-from textual.widgets import Static, TextArea, Tree, Input
-from textual.widgets.tree import TreeNode
+from textual.widgets import Button, Label, Static, TextArea, Tree
 from utils import add_note, delete_note, get_categories, get_notes, update_note
 
 
@@ -11,7 +11,6 @@ class Details(TextArea):
 
     BINDINGS = [
         ("ctrl+s", "save_note", "Save Note"),
-        ("ctrl+l", "add_note", "Add New Note"),
     ]
 
     note_id = reactive(None)
@@ -23,11 +22,8 @@ class Details(TextArea):
             self.note_id = data[0]
             self.note_title = data[1]
             self.text = data[2]
-        except TypeError as e:
+        except TypeError:
             self.border_title = "Empty Loaded"
-
-    def action_add_note(self) -> None:
-        add_note("", self.text)
 
     def action_save_note(self) -> None:
         """Save note content to DB."""
@@ -51,11 +47,11 @@ class Sidebar(Tree, can_focus=True):
 
     BINDINGS = [
         ("ctrl+a", "new_note", "New"),
-        ("ctrl+delete", "delete_note", "Delete"),
+        ("ctrl+delete", "check_delete_note", "Delete"),
     ]
 
-    def update_tree(self):  #TODO: add categories from db
-        # gen = self.root.add("General", expand=True)
+    def update_tree(self):
+        self.clear()
         categories = get_categories()
         for category in categories:
             cat = self.root.add(category, expand=True)
@@ -65,31 +61,69 @@ class Sidebar(Tree, can_focus=True):
                     cat.add_leaf(note_title + " - " + note[5], data=note)
 
     def action_new_note(self) -> None:
-        add_note("New Note", "", str(self.cursor_node.parent.label))  #TODO: prevent from adding to root
-        self.clear()
+        category = ""
+        new_line = 0
+        if self.cursor_node.parent == self.root:
+            category = str(self.cursor_node.label)
+            new_line = self.cursor_line + 1
+        else:
+            category = str(self.cursor_node.parent.label)
+            new_line = self.cursor_node.parent.line + 1
+        add_note("New Note", "", category)
+        # self.clear()
         self.update_tree()
-        self.action_cursor_parent()
-        self.action_cursor_down()
+        self.move_cursor_to_line(new_line, True)
+        self.app.query_one(Details).disabled = False
         self.screen.focus_next(Details)
 
-    def action_delete_note(self) -> None:  #TODO: confirmation dialog
-        # label = str(self.NodeHighlighted(self.cursor_node).node.label)
-        # label = str(self.cursor_node.node.label)
+    def action_delete_note(self) -> None:
         has_children = len(self.cursor_node.children) > 0
-        # if label != "General" and not has_children:
         if not has_children:
             delete_note(self.NodeHighlighted(self.cursor_node).node.data[0])
-            self.clear()
+            # self.clear()
             self.update_tree()
+            self.action_cursor_up()
+            self.refresh()
+
+    def action_check_delete_note(self) -> None:
+        """Display the confirm delete dialog for note node."""
+
+        def check_delete(delete: bool | None) -> None:
+            if delete:
+                self.action_delete_note()
+
+        if self.cursor_node.parent == self.root:
+            pass
+        else:
+            self.app.push_screen(DeleteScreen(), check_delete)
 
     def on_mount(self):
         self.show_root = False
         self.border_title = "Notes"
+        # self.clear()
         self.update_tree()
 
     def on_focus(self) -> None:
-        self.clear()
+        # self.clear()
         self.update_tree()
+
+
+class DeleteScreen(ModalScreen[bool]):
+    """Screen with a dialog to confirm delete note."""
+
+    def compose(self) -> ComposeResult:
+        yield Grid(
+            Label("Are you sure you want to delete?", id="question"),
+            Button("Yes, Delete", variant="error", id="confirm_delete"),
+            Button("Cancel", variant="primary", id="cancel"),
+            id="dialog",
+        )
+
+    def on_button_pressed(self, event: Button.Pressed) -> None:
+        if event.button.id == "confirm_delete":
+            self.dismiss(True)
+        else:
+            self.dismiss(False)
 
 
 class Stats(Static, can_focus=False):
