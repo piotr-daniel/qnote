@@ -11,6 +11,7 @@ class QnoteApp(App):
 
     init_db()
 
+    AUTO_FOCUS = "#sidebar"
     CSS_PATH = "default.tcss"
     TITLE = "QNote"
     BINDINGS = [
@@ -24,8 +25,8 @@ class QnoteApp(App):
         yield Footer()
 
         with Horizontal():
-            with VerticalScroll(classes="column", id="left-pane"):
-                yield Sidebar("Notes")
+            with VerticalScroll(classes="column", id="left-pane", can_focus=False):
+                yield Sidebar("Notes", id="sidebar")
             with Vertical(classes="column", id="right-pane"):
                 yield Stats()
                 yield Details()
@@ -41,7 +42,8 @@ class QnoteApp(App):
                 self.query_one(Details).text = "parent empty"
                 #TODO: add logging here
         else:
-            self.query_one(Details).disabled = True
+            if not self.query_one(Details).has_focus:
+                self.query_one(Details).disabled = True
             self.query_one(Details).text = ""
 
 

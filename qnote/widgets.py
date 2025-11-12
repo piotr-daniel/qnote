@@ -35,12 +35,15 @@ class Details(TextArea):
         self.border_title = "Saved"
         # log success
 
+    def on_focus(self) -> None:
+        self.disabled = False
+
     def on_mount(self) -> None:
         self.border_title = "Details"
 
     def on_text_area_changed(self) -> None:
-        # self.border_title = "Details - Edited"
-        pass
+        if self.has_focus:
+            self.border_title = "Details - Edited"
 
 
 class Sidebar(Tree, can_focus=True):
@@ -53,22 +56,28 @@ class Sidebar(Tree, can_focus=True):
 
     def update_tree(self):  #TODO: add categories from db
         # gen = self.root.add("General", expand=True)
-        categories = get_categories()[0]
+        categories = get_categories()
         for category in categories:
             cat = self.root.add(category, expand=True)
             for note in get_notes():
-                note_title = note[1]
-                cat.add_leaf(note_title + " - " + note[5], data=note)
+                if note[3] == category:
+                    note_title = note[1]
+                    cat.add_leaf(note_title + " - " + note[5], data=note)
 
     def action_new_note(self) -> None:
-        add_note("New Note", "")
+        add_note("New Note", "", str(self.cursor_node.parent.label))  #TODO: prevent from adding to root
         self.clear()
         self.update_tree()
-        self.move_cursor_to_line(1)
-        self.screen.focus_next()
+        self.action_cursor_parent()
+        self.action_cursor_down()
+        self.screen.focus_next(Details)
 
     def action_delete_note(self) -> None:  #TODO: confirmation dialog
-        if str(self.NodeHighlighted(self.cursor_node).node.label) != "General":
+        # label = str(self.NodeHighlighted(self.cursor_node).node.label)
+        # label = str(self.cursor_node.node.label)
+        has_children = len(self.cursor_node.children) > 0
+        # if label != "General" and not has_children:
+        if not has_children:
             delete_note(self.NodeHighlighted(self.cursor_node).node.data[0])
             self.clear()
             self.update_tree()

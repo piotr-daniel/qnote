@@ -58,4 +58,6 @@ def get_categories():
     """Get distinct categories from database."""
     with get_connection() as conn:
         cursor = conn.execute("SELECT DISTINCT category FROM notes ORDER BY created DESC")
-        return cursor.fetchall()
+        categories = [c[0] for c in cursor.fetchall()]
+        categories.sort()
+        return categories
