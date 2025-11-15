@@ -2,53 +2,19 @@ from textual.app import ComposeResult
 from textual.containers import Grid
 from textual.screen import ModalScreen
 from textual.reactive import reactive
-from textual.widgets import Button, Label, Static, TextArea, Tree
-from utils import add_note, delete_note, get_categories, get_notes, update_note
-
-
-class Details(TextArea):
-    """Note details widget."""
-
-    BINDINGS = [
-        ("ctrl+s", "save_note", "Save Note"),
-    ]
-
-    note_id = reactive(None)
-    note_title = reactive(None)
-
-    def load_data(self, data: object) -> None:
-        """Load note content to the widget."""
-        try:
-            self.note_id = data[0]
-            self.note_title = data[1]
-            self.text = data[2]
-        except TypeError:
-            self.border_title = "Empty Loaded"
-
-    def action_save_note(self) -> None:
-        """Save note content to DB."""
-        update_note(self.note_id, self.text)
-        self.border_title = "Saved"
-        # log success
-
-    def on_focus(self) -> None:
-        self.disabled = False
-
-    def on_mount(self) -> None:
-        self.border_title = "Details"
-
-    def on_text_area_changed(self) -> None:
-        if self.has_focus:
-            self.border_title = "Details - Edited"
+from textual.widgets import Button, Label, Tree, Input
+from utils import add_note, delete_note, get_categories, get_notes, update_note_content, update_note_category
 
 
 class Sidebar(Tree, can_focus=True):
     """Sidebar widget."""
 
     BINDINGS = [
-        ("ctrl+a", "new_note", "New"),
+        ("ctrl+n", "new_note", "New"),
+        ("ctrl+e", "edit_info", "Edit Info"),
         ("ctrl+delete", "check_delete_note", "Delete"),
     ]
+
 
     def update_tree(self):
         self.clear()
@@ -70,19 +36,18 @@ class Sidebar(Tree, can_focus=True):
             category = str(self.cursor_node.parent.label)
             new_line = self.cursor_node.parent.line + 1
         add_note("New Note", "", category)
-        # self.clear()
         self.update_tree()
         self.move_cursor_to_line(new_line, True)
-        self.app.query_one(Details).disabled = False
-        self.screen.focus_next(Details)
+        self.app.query_one("#content").disabled = False
+        self.screen.focus_next("#content")
 
     def action_delete_note(self) -> None:
         has_children = len(self.cursor_node.children) > 0
+        note_id = self.NodeHighlighted(self.cursor_node).node.data[0]
         if not has_children:
-            delete_note(self.NodeHighlighted(self.cursor_node).node.data[0])
-            # self.clear()
+            delete_note(note_id)
             self.update_tree()
-            self.action_cursor_up()
+            self.action_cursor_down()
             self.refresh()
 
     def action_check_delete_note(self) -> None:
@@ -97,10 +62,14 @@ class Sidebar(Tree, can_focus=True):
         else:
             self.app.push_screen(DeleteScreen(), check_delete)
 
+    def action_edit_info(self) -> None:
+        self.screen.query_one("#stats").disabled = False
+        self.screen.query_one("#title_input").disabled = False
+        self.screen.focus_next("#title_input")
+
     def on_mount(self):
         self.show_root = False
         self.border_title = "Notes"
-        # self.clear()
         self.update_tree()
 
     def on_focus(self) -> None:
@@ -124,10 +93,3 @@ class DeleteScreen(ModalScreen[bool]):
             self.dismiss(True)
         else:
             self.dismiss(False)
-
-
-class Stats(Static, can_focus=False):
-    """Stats and or To-Do."""
-    def on_mount(self) -> None:
-        self.border_title = "Stats"
-        self.content = str(get_notes())

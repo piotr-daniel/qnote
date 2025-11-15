@@ -1,9 +1,12 @@
 from idlelib.tree import TreeNode
 from textual.app import App, ComposeResult
-from textual.containers import Horizontal, Vertical, VerticalScroll
-from textual.widgets import Footer, Header
-from utils import init_db, get_notes, add_note
-from widgets import Details, Sidebar, Stats
+from textual.containers import Horizontal, HorizontalGroup, Vertical, VerticalScroll
+from textual.widgets import Footer, Header, Input
+
+from utils import init_db
+from widgets.content import Content
+from widgets.stats import Stats
+from widgets.sidebar import Sidebar
 
 
 class QnoteApp(App):
@@ -28,23 +31,27 @@ class QnoteApp(App):
             with VerticalScroll(classes="column", id="left-pane", can_focus=False):
                 yield Sidebar("Notes", id="sidebar")
             with Vertical(classes="column", id="right-pane"):
-                yield Stats()
-                yield Details()
+                yield Stats(id="stats")
+                yield Content(id="content")
 
 
     def on_tree_node_highlighted(self, node:TreeNode) -> None:
         """Show details of note highlighted note."""
         if not node.node.children:
             try:
-                self.query_one(Details).disabled = False
-                self.query_one(Details).load_data(node.node.data)
+                self.query_one(Content).disabled = False
+                self.query_one(Content).load_data(node.node.data)
+                self.query_one(Stats).load_data(node.node.data)
             except AttributeError as e:
-                self.query_one(Details).text = "parent empty"
+                self.query_one(Content).text = str(e)
                 #TODO: add logging here
+            else:
+                pass
         else:
-            if not self.query_one(Details).has_focus:
-                self.query_one(Details).disabled = True
-            self.query_one(Details).text = ""
+            if not self.query_one(Content).has_focus:
+                self.query_one(Content).disabled = True
+            self.query_one(Content).text = ""
+            # self.query_one(Stats).load_data(node.node)
 
 
     def action_toggle_dark(self) -> None:

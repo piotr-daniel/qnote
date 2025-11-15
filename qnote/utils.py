@@ -41,10 +41,22 @@ def delete_note(note_id):
         conn.execute("DELETE FROM notes WHERE id = ?", (note_id,))
 
 
-def update_note(note_id, new_content):
+def update_note_content(note_id, new_content):
     """Update the content of a note."""
     with get_connection() as conn:
         conn.execute("UPDATE notes SET content = ? WHERE id = ?", (new_content, note_id))
+
+
+def update_note_title(note_id, new_title):
+    """Update the title of a note."""
+    with get_connection() as conn:
+        conn.execute("UPDATE notes SET title = ? WHERE id = ?", (new_title, note_id))
+
+
+def update_note_category(note_id, new_category):
+    """Update the category of a note."""
+    with get_connection() as conn:
+        conn.execute("UPDATE notes SET category = ? WHERE id = ?", (new_category, note_id))
 
 
 def get_notes():
@@ -60,6 +72,6 @@ def get_categories():
         cursor = conn.execute("SELECT DISTINCT category FROM notes ORDER BY created DESC")
         categories = [c[0] for c in cursor.fetchall()]
         if not categories:
-            categories.append("General")
+            categories.append("New Notes")
         categories.sort()
         return categories
