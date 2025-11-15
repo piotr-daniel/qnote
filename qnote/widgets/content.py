@@ -19,7 +19,7 @@ class Content(TextArea):
             self.note_id = data[0]
             self.text = data[2]
         except TypeError:
-            self.border_title = str(data)  #TODO: something better in here
+            #self.border_title = str(data)  #TODO: something better in here
             self.disabled = True
 
     def action_save_note(self) -> None:
@@ -32,8 +32,8 @@ class Content(TextArea):
         self.disabled = False
 
     def on_mount(self) -> None:
-        self.border_title = "Details"
+        self.border_title = "Content"
 
     def on_text_area_changed(self) -> None:
         if self.has_focus:
-            self.border_title = "Details - Edited"
+            self.border_title = "Content - Edited"

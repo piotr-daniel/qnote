@@ -37,10 +37,10 @@ class Stats(Widget, can_focus=False):
 
     def on_mount(self) -> None:
         self.border_title = "Stats"
-        self.disabled = True
-        # self.note_title = "Stats"
+        self.disabled = False
 
     def on_input_submitted(self):  #TODO: this to work on next
+        """Submit title and category."""
 
         update_note_title(self.note_id, self.title_input.value)
         update_note_category(self.note_id, self.category_input.value)
