@@ -1,7 +1,7 @@
 from idlelib.tree import TreeNode
 from textual.app import App, ComposeResult
-from textual.containers import Horizontal, HorizontalGroup, Vertical, VerticalScroll
-from textual.widgets import Footer, Header, Input
+from textual.containers import Horizontal, Vertical, VerticalScroll
+from textual.widgets import Footer, Header
 
 from utils import init_db
 from widgets.content import Content
@@ -19,6 +19,7 @@ class QnoteApp(App):
     TITLE = "QNote"
     BINDINGS = [
         ("d", "toggle_dark", "Toggle dark mode"),
+        ("ctrl+q", "quit", "Quit"),
     ]
 
     def compose(self) -> ComposeResult:
@@ -39,7 +40,7 @@ class QnoteApp(App):
         """Show details of note highlighted note."""
         if not node.node.children:
             try:
-                self.query_one(Content).disabled = False
+                # self.query_one(Content).disabled = False
                 self.query_one(Content).load_data(node.node.data)
                 self.query_one(Stats).load_data(node.node.data)
             except AttributeError as e:
@@ -48,10 +49,10 @@ class QnoteApp(App):
             else:
                 pass
         else:
-            if not self.query_one(Content).has_focus:
+            if not self.query_one("#content_input").has_focus:
                 self.query_one(Content).disabled = True
-            self.query_one(Content).text = ""
-            # self.query_one(Stats).load_data(node.node)
+            #self.query_one(Content).text = ""
+            self.query_one(Stats).load_data(node.node)
 
 
     def action_toggle_dark(self) -> None:

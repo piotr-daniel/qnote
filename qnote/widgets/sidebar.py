@@ -2,7 +2,7 @@ from textual.app import ComposeResult
 from textual.containers import Grid
 from textual.screen import ModalScreen
 from textual.reactive import reactive
-from textual.widgets import Button, Label, Tree, Input
+from textual.widgets import Button, Label, Tree
 from utils import add_note, delete_note, get_categories, get_notes, update_note_content, update_note_category
 
 
@@ -11,7 +11,7 @@ class Sidebar(Tree, can_focus=True):
 
     BINDINGS = [
         ("ctrl+n", "new_note", "New"),
-        ("ctrl+e", "edit_info", "Edit Info"),
+        ("ctrl+e", "edit_content", "Edit"),
         ("ctrl+delete", "check_delete_note", "Delete"),
     ]
 
@@ -47,16 +47,22 @@ class Sidebar(Tree, can_focus=True):
         self.move_cursor_to_line(new_line)
 
         # Move focus and cursor to the content text area for instant access
-        self.app.query_one("#content").disabled = False
-        self.screen.focus_next("#content")
+        self.screen.query_one("Content").disabled = False
+        self.screen.query_one("#title_input").disabled = False
+        self.screen.query_one("#category_input").disabled = False
+        self.screen.query_one("#content_input").disabled = False
+        self.screen.focus_next("#content_input")
+        self.can_focus = False
 
     def action_delete_note(self) -> None:
         has_children = len(self.cursor_node.children) > 0
         note_id = self.NodeHighlighted(self.cursor_node).node.data[0]
+        cursor_line = self.cursor_line
         if not has_children:
             delete_note(note_id)
             self.update_tree()
-            self.move_cursor_to_line(self.cursor_line)
+            self.select_node(None)
+            self.move_cursor_to_line(cursor_line)
             self.refresh()
 
     def action_check_delete_note(self) -> None:
@@ -71,18 +77,25 @@ class Sidebar(Tree, can_focus=True):
         else:
             self.app.push_screen(DeleteScreen(), check_delete)
 
-    def action_edit_info(self) -> None:
-        self.screen.query_one("#stats").disabled = False
-        self.screen.query_one("#title_input").disabled = False
-        self.screen.focus_next("#title_input")
+    def action_edit_content(self) -> None:
+        has_children = len(self.cursor_node.children) > 0
+
+        if not has_children:
+            self.screen.query_one("Content").disabled = False
+            self.screen.query_one("#title_input").disabled = False
+            self.screen.query_one("#category_input").disabled = False
+            self.screen.query_one("#content_input").disabled = False
+            self.screen.focus_next("#content_input")
+            self.can_focus = False
 
     def on_mount(self):
         self.show_root = False
         self.border_title = "Notes"
         self.update_tree()
+        self.move_cursor_to_line(0)
 
     def on_focus(self) -> None:
-        # self.clear()
+        self.screen.query_one("Content").disabled = True
         self.update_tree()
 
 

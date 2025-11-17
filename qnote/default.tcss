@@ -4,7 +4,8 @@ Button {
 
 Content {
     border: round green;
-    height: 65%;
+    height: 75%;
+    padding: 0 1;
 }
 
 DeleteScreen {
@@ -15,18 +16,23 @@ Header {
     color: white;
 }
 
+Input {
+    width: 20%;
+}
+
 Label {
-    width: 10%;
+    /*width: 10%;*/
 }
 
 Sidebar {
     border: round purple;
     height: 100%;
+    padding: 0 1;
 }
 
 Stats {
     border: round red;
-    height: 35%;
+    height: 25%;
     padding: 0 1;
 }
 
