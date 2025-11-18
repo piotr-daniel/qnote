@@ -66,7 +66,11 @@ class Content(Widget):
         self.content_input.disabled = True
         self.disabled = True
         self.app.query_one("#sidebar").can_focus = True
+        self.app.query_one("#sidebar").update_tree()
         self.screen.focus_next("#sidebar").refresh()
+        new_line = self.app.query_one("#sidebar").cursor_node.parent.line + 1
+        self.app.query_one("#sidebar").select_node(None)
+        self.app.query_one("#sidebar").move_cursor_to_line(new_line)
 
     def action_cancel_edit(self) -> None:
         """Cancel edit."""

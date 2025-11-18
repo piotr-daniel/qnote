@@ -1,15 +1,27 @@
+$border: round #0081a7;
+$borderInactive: round #284b63;
+
+* {
+    background: #0C0C0C;
+    color: #E5E5E5;
+}
+
 Button {
     width: 100%;
 }
 
 Content {
-    border: round green;
+    border: $border;
     height: 75%;
     padding: 0 1;
 }
 
 DeleteScreen {
     align: center middle;
+}
+
+Footer .key {
+    color: red;
 }
 
 Header {
@@ -25,24 +37,42 @@ Label {
 }
 
 Sidebar {
-    border: round purple;
+    border: $borderInactive;
     height: 100%;
     padding: 0 1;
 }
 
 Stats {
-    border: round red;
+    border: $border;
     height: 25%;
     padding: 0 1;
 }
 
+TextArea:focus {
+    border: $borderInactive;
+}
+
 TextArea .text-area--cursor {
-    background: green;
+    background: #ff6b35;
+}
+
+Tree:focus {
+    background: black;
+    border: $border;
 }
 
 .column {
     /*border: solid red;*/
     padding: 1 1;
+}
+
+.tree--cursor {
+    /*background: #B48EAD;*/
+    color: #ff6b35;
+}
+
+.tree--guides-selected {
+    color: #ff6b35;
 }
 
 #dialog {

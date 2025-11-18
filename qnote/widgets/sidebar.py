@@ -24,7 +24,7 @@ class Sidebar(Tree, can_focus=True):
             for note in get_notes():
                 if note[3] == category:
                     note_title = note[1]
-                    cat.add_leaf(note_title + " - " + note[5], data=note)
+                    cat.add_leaf(note_title + " (" + str(note[6]) + ")", data=note)
 
     def action_new_note(self) -> None:
         """Create a new note."""

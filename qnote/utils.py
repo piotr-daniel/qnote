@@ -1,3 +1,4 @@
+from datetime import datetime
 import logging
 import sqlite3
 from pathlib import Path
@@ -20,7 +21,8 @@ def init_db():
             content TEXT NOT NULL,
             category TEXT NOT NULL,
             tags TEXT,
-            created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated TIMESTAMP
         )
         """)
 
@@ -30,8 +32,8 @@ def add_note(title: str, content: str, category: str, tags: list = None):
     tags_str = ",".join(tags) if tags else None
     with get_connection() as conn:
         conn.execute(
-            "INSERT INTO notes (title, content, category, tags) VALUES (?, ?, ?, ?)",
-            (title, content, category, tags_str)
+            "INSERT INTO notes (title, content, category, tags, updated) VALUES (?, ?, ?, ?, ?)",
+            (title, content, category, tags_str, datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         )
 
 
@@ -44,7 +46,8 @@ def delete_note(note_id):
 def update_note_content(note_id, new_content):
     """Update the content of a note."""
     with get_connection() as conn:
-        conn.execute("UPDATE notes SET content = ? WHERE id = ?", (new_content, note_id))
+        conn.execute("UPDATE notes SET content = ?, updated = ? WHERE id = ?",
+                     (new_content, datetime.now().strftime("%Y-%m-%d %H:%M:%S"), note_id))
 
 
 def update_note_title(note_id, new_title):
@@ -62,14 +65,14 @@ def update_note_category(note_id, new_category):
 def get_notes():
     """Get all notes from database."""
     with get_connection() as conn:
-        cursor = conn.execute("SELECT * FROM notes ORDER BY created DESC")
+        cursor = conn.execute("SELECT * FROM notes ORDER BY updated DESC;")
         return cursor.fetchall()
 
 
 def get_categories():
     """Get distinct categories from database. If there are no categories, return General as default."""
     with get_connection() as conn:
-        cursor = conn.execute("SELECT DISTINCT category FROM notes ORDER BY created DESC")
+        cursor = conn.execute("SELECT DISTINCT category FROM notes;")
         categories = [c[0] for c in cursor.fetchall()]
         if not categories:
             categories.append("New Notes")
