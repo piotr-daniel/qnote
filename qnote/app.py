@@ -32,8 +32,8 @@ class QnoteApp(App):
             with VerticalScroll(classes="column", id="left-pane", can_focus=False):
                 yield Sidebar("Notes", id="sidebar")
             with Vertical(classes="column", id="right-pane"):
-                yield Stats(id="stats")
-                yield Content(id="content")
+                yield Stats(classes="inactive", id="stats")
+                yield Content(classes="inactive", id="content")
 
 
     def on_tree_node_highlighted(self, node:TreeNode) -> None:

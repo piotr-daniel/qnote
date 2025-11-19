@@ -16,11 +16,30 @@ Content {
     padding: 0 1;
 }
 
+Content.inactive {
+    border: $borderInactive;
+}
+
+ContentInput {
+    padding: 0;
+    margin: 0;
+    border: none;
+}
+
+ContentInput:focus {
+    border: none;
+    /*background: darkgrey;*/
+}
+
+ContentInput .text-area--cursor {
+    background: #ff6b35;
+}
+
 DeleteScreen {
     align: center middle;
 }
 
-Footer .key {
+Footer.key {
     color: red;
 }
 
@@ -29,7 +48,16 @@ Header {
 }
 
 Input {
-    width: 20%;
+    width: 25%;
+}
+
+Input .input--cursor {
+    background: #ff6b35;
+}
+
+Input .input--selection {
+    background: #ff6b35;
+    color: black;
 }
 
 Label {
@@ -42,18 +70,10 @@ Sidebar {
     padding: 0 1;
 }
 
-Stats {
-    border: $border;
+Stats.inactive {
+    border: $borderInactive;
     height: 25%;
     padding: 0 1;
-}
-
-TextArea:focus {
-    border: $borderInactive;
-}
-
-TextArea .text-area--cursor {
-    background: #ff6b35;
 }
 
 Tree:focus {
@@ -73,6 +93,12 @@ Tree:focus {
 
 .tree--guides-selected {
     color: #ff6b35;
+}
+
+#content_header {
+    align: center middle;
+    margin: 1 0;
+    border-bottom: round purple;
 }
 
 #dialog {

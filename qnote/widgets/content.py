@@ -11,6 +11,7 @@ class ContentInput(TextArea):
     """Note content widget."""
 
     def on_focus(self) -> None:
+        self.parent.remove_class("inactive")
         self.action_cursor_line_end()
         self.action_cursor_page_down()
 
@@ -32,7 +33,7 @@ class Content(Widget):
     content_input = ContentInput(id="content_input", disabled=True)
 
     def compose(self) -> ComposeResult:
-        with HorizontalGroup():
+        with HorizontalGroup(id="content_header"):
             yield Label("Title: ")
             yield self.title_input
             yield Label("Category: ")
@@ -75,6 +76,7 @@ class Content(Widget):
     def action_cancel_edit(self) -> None:
         """Cancel edit."""
 
+        self.border_title = "Content"
         self.app.query_one("#sidebar").can_focus = True
         self.screen.focus_next("#sidebar")
         self.app.query_one("Content").disabled = True

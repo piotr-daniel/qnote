@@ -96,6 +96,7 @@ class Sidebar(Tree, can_focus=True):
 
     def on_focus(self) -> None:
         self.screen.query_one("Content").disabled = True
+        self.screen.query_one("Content").add_class("inactive")
         self.update_tree()
 
 
