@@ -79,6 +79,9 @@ class Content(Widget):
         self.border_title = "Content"
         self.app.query_one("#sidebar").can_focus = True
         self.screen.focus_next("#sidebar")
+        node_line = self.app.query_one("#sidebar").cursor_node.line
+        self.app.query_one("#sidebar").select_node(None)
+        self.app.query_one("#sidebar").move_cursor_to_line(node_line)
         self.app.query_one("Content").disabled = True
 
     def on_focus(self) -> None:
@@ -87,14 +90,15 @@ class Content(Widget):
     def on_mount(self) -> None:
         self.border_title = "Content"
 
-    def on_input_submitted(self):  #TODO: this to work on next
+    def on_input_submitted(self):  #keeping for ref
         """Submit title and category."""
+        pass
 
-        update_note_title(self.note_id, self.title_input.value)
-        update_note_category(self.note_id, self.category_input.value)
-        self.title_input.disabled = True
-        self.category_input.disabled = True
-        self.content_input.disabled = True
-        self.disabled = True
-        self.app.query_one("#sidebar").can_focus = True
-        self.screen.focus_next("#sidebar").refresh()
+        #update_note_title(self.note_id, self.title_input.value)
+        #update_note_category(self.note_id, self.category_input.value)
+        #self.title_input.disabled = True
+        #self.category_input.disabled = True
+        #self.content_input.disabled = True
+        #self.disabled = True
+        #self.app.query_one("#sidebar").can_focus = True
+        #self.screen.focus_next("#sidebar").refresh()
