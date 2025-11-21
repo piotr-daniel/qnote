@@ -62,6 +62,12 @@ def update_note_category(note_id, new_category):
         conn.execute("UPDATE notes SET category = ? WHERE id = ?", (new_category, note_id))
 
 
+def get_note(note_id):
+    """Get all notes from database."""
+    with get_connection() as conn:
+        cursor = conn.execute("SELECT * FROM notes WHERE id = ?", note_id)
+        return cursor.fetchone()
+
 def get_notes():
     """Get all notes from database."""
     with get_connection() as conn:
