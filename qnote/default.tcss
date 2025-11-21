@@ -3,7 +3,7 @@ $borderInactive: round #284b63;
 
 * {
     background: #0C0C0C;
-    color: #E5E5E5;
+    /*color: #E5E5E5;*/
 }
 
 Button {
@@ -17,7 +17,11 @@ Content {
 }
 
 Content.inactive {
-    border: $borderInactive;
+    border: $border;
+}
+
+Content.saved {
+    border: round #ff6b35;
 }
 
 ContentInput {
@@ -37,10 +41,6 @@ ContentInput .text-area--cursor {
 
 DeleteScreen {
     align: center middle;
-}
-
-Footer.key {
-    color: red;
 }
 
 Header {
@@ -65,13 +65,13 @@ Label {
 }
 
 Sidebar {
-    border: $borderInactive;
+    border: $border;
     height: 100%;
     padding: 0 1;
 }
 
 Stats.inactive {
-    border: $borderInactive;
+    border: $border;
     height: 25%;
     padding: 0 1;
 }

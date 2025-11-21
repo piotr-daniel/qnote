@@ -1,3 +1,7 @@
+import asyncio
+from random import randint
+from time import sleep
+
 from textual.app import ComposeResult
 from textual.containers import HorizontalGroup
 from textual.reactive import reactive
@@ -18,6 +22,8 @@ class ContentInput(TextArea):
     def on_text_area_changed(self) -> None:
         if self.has_focus:
             self.parent.border_title = "Content - Edited"
+            letters = ["a", "p", "f", "o"]
+            self.app.query_one("#stats").vis.content = letters[randint(0, len(letters) - 1)]
 
 
 class Content(Widget):
@@ -42,6 +48,7 @@ class Content(Widget):
 
     note_id = reactive(None)
 
+
     def load_data(self, data: object) -> None:
         """Load note content to the widget."""
         try:
@@ -54,24 +61,36 @@ class Content(Widget):
             #self.disabled = True
             pass
 
+
     def action_save_note(self) -> None:
         """Save note content to DB."""
 
         update_note_content(self.note_id, self.content_input.text)
-        self.border_title = "Saved"
+
         # log success
         update_note_title(self.note_id, self.title_input.value)
         update_note_category(self.note_id, self.category_input.value)
-        self.title_input.disabled = True
-        self.category_input.disabled = True
-        self.content_input.disabled = True
-        self.disabled = True
         self.app.query_one("#sidebar").can_focus = True
         self.app.query_one("#sidebar").update_tree()
         self.screen.focus_next("#sidebar").refresh()
         new_line = self.app.query_one("#sidebar").cursor_node.parent.line + 1
         self.app.query_one("#sidebar").select_node(None)
         self.app.query_one("#sidebar").move_cursor_to_line(new_line)
+        self.call_later(self.save_confirm_visual)
+
+
+    async def save_confirm_visual(self):
+        """Add a visual cue that note is saved."""
+
+        self.add_class("saved")
+        self.border_title = "Saved"
+        await asyncio.sleep(1)
+        self.border_title = "Content"
+        self.remove_class("saved")
+        self.refresh()
+        self.disabled = True
+        #self.styles.animate("opacity ", value=1, duration=2.0)
+
 
     def action_cancel_edit(self) -> None:
         """Cancel edit."""
@@ -84,11 +103,14 @@ class Content(Widget):
         self.app.query_one("#sidebar").move_cursor_to_line(node_line)
         self.app.query_one("Content").disabled = True
 
+
     def on_focus(self) -> None:
         self.disabled = False
 
+
     def on_mount(self) -> None:
         self.border_title = "Content"
+
 
     def on_input_submitted(self):  #keeping for ref
         """Submit title and category."""

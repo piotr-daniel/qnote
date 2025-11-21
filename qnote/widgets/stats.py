@@ -7,11 +7,12 @@ from utils import get_notes
 
 
 class Stats(Static, can_focus=False):
-    """Stats and or To-Do."""
+    """Stats and Visuals."""
 
     wordcount = Static()
     created = Static()
     updated = Static()
+    vis = Static()
 
     def compose(self) -> ComposeResult:
         with HorizontalGroup():
@@ -23,6 +24,8 @@ class Stats(Static, can_focus=False):
         with HorizontalGroup():
             yield Label("Updated on: ")
             yield self.updated
+        with HorizontalGroup():
+            yield self.vis
 
     note_id = reactive(None)
 
