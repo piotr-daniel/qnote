@@ -32,10 +32,10 @@ class Stats(Static, can_focus=False):
     def load_data(self, data: object) -> None:
         """Load note content to the widget."""
         try:
-            self.note_id = data[0]
-            self.wordcount.content = str(len(data[2].split()))
-            self.created.content = data[5]
-            self.updated.content = str(data[6])
+            self.note_id = data["id"]
+            self.wordcount.content = str(len(data["content"].split()))
+            self.created.content = data["created"]
+            self.updated.content = str(data["updated"])
         except TypeError:
             pass
             #self.border_title = str(data)  # TODO: something better in here

@@ -40,10 +40,10 @@ class QnoteApp(App):
         """Show details of note highlighted note."""
         if not node.node.children:
             try:
-                # self.query_one(Content).disabled = False
-                self.query_one(Content).load_data(node.node.data)
+                self.query_one(Content).border_title = "Content"
+                self.query_one(Content).load_data(node.node)
                 self.query_one(Stats).load_data(node.node.data)
-            except AttributeError as e:
+            except (AttributeError, TypeError) as e:
                 self.query_one(Content).text = str(e)
                 #TODO: add logging here
             else:

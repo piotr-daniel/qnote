@@ -131,3 +131,12 @@ Tree:focus {
 #right-pane {
     width: 2fr;
 }
+
+Footer .footer--keys .key {
+  background: #39424E;
+  color: #FFFFFF;
+}
+
+Footer .footer--keys .label {
+  color: #B3B3B3;
+}

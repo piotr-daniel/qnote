@@ -23,8 +23,16 @@ class Sidebar(Tree, can_focus=True):
             cat = self.root.add(category, expand=True)
             for note in get_notes():
                 if note[3] == category:
-                    note_title = note[1]
-                    cat.add_leaf(note_title + " (" + str(note[6]) + ")", data=note)
+                    cat.add_leaf(f"{note[1]} ({note[6]})",
+                        data={"id": note[0],
+                              "title": note[1],
+                              "content": note[2],
+                              "category": note[3],
+                              "tags": note[4],
+                              "created": note[5],
+                              "updated": note[6]
+                              }
+                    )
 
     def action_new_note(self) -> None:
         """Create a new note."""
@@ -48,15 +56,12 @@ class Sidebar(Tree, can_focus=True):
 
         # Move focus and cursor to the content text area for instant access
         self.screen.query_one("Content").disabled = False
-        #self.screen.query_one("#title_input").disabled = False
-        #self.screen.query_one("#category_input").disabled = False
-        #self.screen.query_one("#content_input").disabled = False
         self.screen.focus_next("#content_input")
         self.can_focus = False
 
     def action_delete_note(self) -> None:
         has_children = len(self.cursor_node.children) > 0
-        note_id = self.NodeHighlighted(self.cursor_node).node.data[0]
+        note_id = self.NodeHighlighted(self.cursor_node).node.data["id"]
         cursor_line = self.cursor_line
         if not has_children:
             delete_note(note_id)

@@ -1,6 +1,5 @@
 import asyncio
-from random import randint
-from time import sleep
+from random import choice
 
 from textual.app import ComposeResult
 from textual.containers import HorizontalGroup
@@ -23,7 +22,7 @@ class ContentInput(TextArea):
         if self.has_focus:
             self.parent.border_title = "Content - Edited"
             letters = ["a", "p", "f", "o"]
-            self.app.query_one("#stats").vis.content = letters[randint(0, len(letters) - 1)]
+            self.app.query_one("#stats").vis.content = choice(letters)
 
 
 class Content(Widget):
@@ -46,40 +45,52 @@ class Content(Widget):
             yield self.category_input
         yield self.content_input
 
+
     note_id = reactive(None)
+    node = None
+
+    sidebar: Widget | None = None
 
 
-    def load_data(self, data: object) -> None:
+    def load_data(self, node: object) -> None:
         """Load note content to the widget."""
         try:
-            self.note_id = data[0]
-            self.title_input.value = data[1]
-            self.category_input.value = data[3]
-            self.content_input.text = data[2]
+            self.node = node
+            self.note_id = node.data["id"]
+            self.title_input.value = node.data["title"]
+            self.category_input.value = node.data["category"]
+            self.content_input.text = node.data["content"]
         except TypeError:
             #self.border_title = str(data)  #TODO: something better in here
             #self.disabled = True
             pass
 
 
+    def on_mount(self) -> None:
+        self.border_title = "Content"
+        self.sidebar = self.app.query_one("#sidebar")
+
+
+    def on_focus(self) -> None:
+        self.disabled = False
+
+
     def action_save_note(self) -> None:
         """Save note content to DB."""
 
         update_note_content(self.note_id, self.content_input.text)
-
-        # log success
         update_note_title(self.note_id, self.title_input.value)
         update_note_category(self.note_id, self.category_input.value)
-        self.app.query_one("#sidebar").can_focus = True
-        self.app.query_one("#sidebar").update_tree()
+
+        self.sidebar.can_focus = True
+        self.sidebar.update_tree()
         self.screen.focus_next("#sidebar").refresh()
-        new_line = self.app.query_one("#sidebar").cursor_node.parent.line + 1
-        self.app.query_one("#sidebar").select_node(None)
-        self.app.query_one("#sidebar").move_cursor_to_line(new_line)
-        self.call_later(self.save_confirm_visual)
+
+        self.call_later(self._reselect)
+        self.call_later(self._save_confirm_visual)
 
 
-    async def save_confirm_visual(self):
+    async def _save_confirm_visual(self):
         """Add a visual cue that note is saved."""
 
         self.add_class("saved")
@@ -91,36 +102,31 @@ class Content(Widget):
         self.disabled = True
         #self.styles.animate("opacity ", value=1, duration=2.0)
 
+    def _reselect(self):
+        target_id = self.note_id
+
+        def find_node(node):
+            if getattr(node, "data", None) and node.data.get("id") == target_id:
+                return node
+            for child in getattr(node, "children", []):
+                found = find_node(child)
+                if found:
+                    return found
+            return None
+
+        node = find_node(self.sidebar.root)
+        if node:
+            self.sidebar.select_node(node)
+            self.sidebar.move_cursor(node)
+
 
     def action_cancel_edit(self) -> None:
         """Cancel edit."""
 
         self.border_title = "Content"
-        self.app.query_one("#sidebar").can_focus = True
+        self.sidebar.can_focus = True
         self.screen.focus_next("#sidebar")
-        node_line = self.app.query_one("#sidebar").cursor_node.line
-        self.app.query_one("#sidebar").select_node(None)
-        self.app.query_one("#sidebar").move_cursor_to_line(node_line)
-        self.app.query_one("Content").disabled = True
-
-
-    def on_focus(self) -> None:
-        self.disabled = False
-
-
-    def on_mount(self) -> None:
-        self.border_title = "Content"
-
-
-    def on_input_submitted(self):  #keeping for ref
-        """Submit title and category."""
-        pass
-
-        #update_note_title(self.note_id, self.title_input.value)
-        #update_note_category(self.note_id, self.category_input.value)
-        #self.title_input.disabled = True
-        #self.category_input.disabled = True
-        #self.content_input.disabled = True
-        #self.disabled = True
-        #self.app.query_one("#sidebar").can_focus = True
-        #self.screen.focus_next("#sidebar").refresh()
+        node_line = self.sidebar.cursor_node.line
+        self.sidebar.select_node(None)
+        self.sidebar.move_cursor_to_line(node_line)
+        self.disabled = True
