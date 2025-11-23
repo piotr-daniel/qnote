@@ -38,6 +38,7 @@ class QnoteApp(App):
 
     def on_tree_node_highlighted(self, node:TreeNode) -> None:
         """Show details of note highlighted note."""
+
         if not node.node.children:
             try:
                 self.query_one(Content).border_title = "Content"
@@ -50,8 +51,9 @@ class QnoteApp(App):
                 pass
         else:
             if not self.query_one("#content_input").has_focus:
+                self.query_one("#content_input").text = str(node.node.label)
                 self.query_one(Content).disabled = True
-            #self.query_one(Content).text = ""
+
             self.query_one(Stats).load_data(node.node)
 
 

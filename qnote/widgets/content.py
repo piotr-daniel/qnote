@@ -5,7 +5,7 @@ from textual.app import ComposeResult
 from textual.containers import HorizontalGroup
 from textual.reactive import reactive
 from textual.widget import Widget
-from textual.widgets import Input, Label, TextArea
+from textual.widgets import Input, Label, Rule, TextArea
 
 from utils import update_note_content, update_note_category, update_note_title
 
@@ -22,7 +22,7 @@ class ContentInput(TextArea):
         if self.has_focus:
             self.parent.border_title = "Content - Edited"
             letters = ["a", "p", "f", "o"]
-            self.app.query_one("#stats").vis.content = choice(letters)
+            #self.app.query_one("#stats").vis.content = choice(letters)
 
 
 class Content(Widget):
@@ -43,6 +43,7 @@ class Content(Widget):
             yield self.title_input
             yield Label("Category: ")
             yield self.category_input
+        yield Rule()
         yield self.content_input
 
 
@@ -88,6 +89,8 @@ class Content(Widget):
 
         self.call_later(self._reselect)
         self.call_later(self._save_confirm_visual)
+
+        self.app.query_one("#stats").is_animating = False
 
 
     async def _save_confirm_visual(self):

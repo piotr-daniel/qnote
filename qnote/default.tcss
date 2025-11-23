@@ -1,4 +1,4 @@
-$border: round #0081a7;
+$border: round #0081a7; /* 5e81ac 4c566a fff4e8 003049 */
 $borderInactive: round #284b63;
 
 * {
@@ -64,6 +64,10 @@ Label {
     /*width: 10%;*/
 }
 
+Rule {
+    color: #003049;
+}
+
 Sidebar {
     border: $border;
     height: 100%;
@@ -103,7 +107,7 @@ Tree:focus {
 #content_header {
     align: center middle;
     margin: 1 0;
-    border-bottom: round purple;
+    /*border-bottom: round purple;*/
 }
 
 #dialog {
@@ -130,6 +134,12 @@ Tree:focus {
 
 #right-pane {
     width: 2fr;
+}
+
+#visual_panel {
+    /*border: $border;*/
+    height: 10;
+    color: #ff6b35;
 }
 
 Footer .footer--keys .key {

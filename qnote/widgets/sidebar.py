@@ -16,6 +16,19 @@ class Sidebar(Tree, can_focus=True):
     ]
 
 
+    def on_mount(self):
+        self.show_root = False
+        self.guide_depth = 3
+        self.border_title = "Notes"
+        self.update_tree()
+        self.move_cursor_to_line(0)
+
+    def on_focus(self) -> None:
+        self.screen.query_one("Content").disabled = True
+        self.screen.query_one("Content").add_class("inactive")
+        self.update_tree()
+
+
     def update_tree(self):
         self.clear()
         categories = get_categories()
@@ -86,23 +99,13 @@ class Sidebar(Tree, can_focus=True):
         has_children = len(self.cursor_node.children) > 0
 
         if not has_children:
+            self.app.query_one("#stats").is_animating = True
             self.screen.query_one("Content").disabled = False
             self.screen.query_one("#title_input").disabled = False
             self.screen.query_one("#category_input").disabled = False
             self.screen.query_one("#content_input").disabled = False
             self.screen.focus_next("#content_input")
             self.can_focus = False
-
-    def on_mount(self):
-        self.show_root = False
-        self.border_title = "Notes"
-        self.update_tree()
-        self.move_cursor_to_line(0)
-
-    def on_focus(self) -> None:
-        self.screen.query_one("Content").disabled = True
-        self.screen.query_one("Content").add_class("inactive")
-        self.update_tree()
 
 
 class DeleteScreen(ModalScreen[bool]):
