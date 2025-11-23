@@ -125,10 +125,9 @@ class Stats(Static, can_focus=False):
             self.created.content = data["created"]
             self.updated.content = str(data["updated"])
             self.age.content = str(datetime.now() - datetime.strptime(data["created"], "%Y-%m-%d %H:%M:%S"))
-        except TypeError as e:
+        except TypeError:
             pass
-            #self.border_title = str(e)  # TODO: something better in here
-            # self.disabled = True
+            # TODO: logging
 
     def on_mount(self) -> None:
         self.border_title = "Stats"

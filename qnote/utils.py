@@ -1,5 +1,4 @@
 from datetime import datetime
-import logging
 import sqlite3
 from pathlib import Path
 

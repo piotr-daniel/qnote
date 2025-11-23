@@ -1,10 +1,5 @@
-$border: round #0081a7; /* 5e81ac 4c566a fff4e8 003049 */
-$borderInactive: round #284b63;
+$border: round;
 
-* {
-    background: #0C0C0C;
-    /*color: #E5E5E5;*/
-}
 
 Button {
     width: 100%;
@@ -21,7 +16,7 @@ Content.inactive {
 }
 
 Content.saved {
-    border: round #ff6b35;
+    border: round $accent;
 }
 
 ContentInput {
@@ -32,19 +27,14 @@ ContentInput {
 
 ContentInput:focus {
     border: none;
-    /*background: darkgrey;*/
 }
 
 ContentInput .text-area--cursor {
-    background: #ff6b35;
+    background: $accent;
 }
 
 DeleteScreen {
     align: center middle;
-}
-
-Header {
-    color: white;
 }
 
 Input {
@@ -52,26 +42,17 @@ Input {
 }
 
 Input .input--cursor {
-    background: #ff6b35;
-}
-
-Input .input--selection {
-    background: #E5E5E5;
-    color: black;
-}
-
-Label {
-    /*width: 10%;*/
-}
-
-Rule {
-    color: #003049;
+    background: $accent;
 }
 
 Sidebar {
     border: $border;
     height: 100%;
     padding: 0 1;
+}
+
+Sidebar:focus {
+    background: $background-darken-1;
 }
 
 Stats {
@@ -81,34 +62,22 @@ Stats {
     color: grey;
 }
 
-Tree:focus {
-    background: black;
-    border: $border;
-}
-
 .column {
-    /*border: solid red;*/
     padding: 1 1;
 }
 
-.text-area--selection {
-    background: #E5E5E5;
-    color: black;
-}
-
 .tree--cursor {
-    /*background: #B48EAD;*/
-    color: #ff6b35;
+    background: $background;
+    color: $accent;
 }
 
 .tree--guides-selected {
-    color: #ff6b35;
+    color: $accent;
 }
 
 #content-header {
     align: center middle;
     margin: 1 0;
-    /*border-bottom: round purple;*/
 }
 
 #dialog {
@@ -118,7 +87,7 @@ Tree:focus {
     padding: 0 1;
     width: 60;
     height: 11;
-    border: thick $background 80%;
+    border: round red 80%;
     background: $surface;
 }
 
@@ -138,16 +107,6 @@ Tree:focus {
 }
 
 #visual-panel {
-    /*border: $border;*/
     height: 10;
-    color: #ff6b35;
-}
-
-.footer-key--key {
-    color: #ff6b35;
-}
-
-FooterKey {
-    padding: 0;
-    margin: 0;
+    color: $accent;
 }

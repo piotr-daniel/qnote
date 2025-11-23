@@ -61,8 +61,7 @@ class Content(Widget):
             self.category_input.value = node.data["category"]
             self.content_input.text = node.data["content"]
         except TypeError:
-            #self.border_title = str(data)  #TODO: something better in here
-            #self.disabled = True
+            #TODO: logging
             pass
 
 
@@ -101,7 +100,6 @@ class Content(Widget):
         self.remove_class("saved")
         self.refresh()
         self.disabled = True
-        #self.styles.animate("opacity ", value=1, duration=2.0)
 
     def _reselect(self):
         target_id = self.note_id

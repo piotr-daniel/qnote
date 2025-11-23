@@ -3,6 +3,7 @@ from textual.app import App, ComposeResult
 from textual.containers import Horizontal, Vertical, VerticalScroll
 from textual.widgets import Footer, Header
 
+import themes
 from utils import init_db
 from widgets.content import Content
 from widgets.stats import Stats
@@ -21,6 +22,12 @@ class QnoteApp(App):
         ("d", "toggle_dark", "Toggle dark mode"),
         ("ctrl+q", "quit", "Quit"),
     ]
+
+    def on_mount(self):
+        for theme in themes.all_themes:
+            self.register_theme(theme)
+
+        self.theme = "qnote"
 
     def compose(self) -> ComposeResult:
         """Create child widgets for the app."""
@@ -46,7 +53,6 @@ class QnoteApp(App):
                 self.query_one(Stats).load_data(node.node.data)
             except (AttributeError, TypeError) as e:
                 self.query_one(Content).text = str(e)
-                #TODO: add logging here
             else:
                 pass
         else:
@@ -60,7 +66,7 @@ class QnoteApp(App):
     def action_toggle_dark(self) -> None:
         """An action to toggle dark mode."""
         self.theme = (
-            "textual-dark" if self.theme == "textual-light" else "textual-light"
+            "textual-light" if self.theme == "qnote" else "qnote"
         )
 
 
