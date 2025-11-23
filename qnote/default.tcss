@@ -74,10 +74,11 @@ Sidebar {
     padding: 0 1;
 }
 
-Stats.inactive {
+Stats {
     border: $border;
     height: 25%;
     padding: 0 1;
+    color: grey;
 }
 
 Tree:focus {
@@ -104,7 +105,7 @@ Tree:focus {
     color: #ff6b35;
 }
 
-#content_header {
+#content-header {
     align: center middle;
     margin: 1 0;
     /*border-bottom: round purple;*/
@@ -136,17 +137,17 @@ Tree:focus {
     width: 2fr;
 }
 
-#visual_panel {
+#visual-panel {
     /*border: $border;*/
     height: 10;
     color: #ff6b35;
 }
 
-Footer .footer--keys .key {
-  background: #39424E;
-  color: #FFFFFF;
+.footer-key--key {
+    color: #ff6b35;
 }
 
-Footer .footer--keys .label {
-  color: #B3B3B3;
+FooterKey {
+    padding: 0;
+    margin: 0;
 }

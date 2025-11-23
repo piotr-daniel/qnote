@@ -69,7 +69,7 @@ class Sidebar(Tree, can_focus=True):
 
         # Move focus and cursor to the content text area for instant access
         self.screen.query_one("Content").disabled = False
-        self.screen.focus_next("#content_input")
+        self.screen.focus_next("#content-input")
         self.can_focus = False
 
     def action_delete_note(self) -> None:
@@ -101,10 +101,10 @@ class Sidebar(Tree, can_focus=True):
         if not has_children:
             self.app.query_one("#stats").is_animating = True
             self.screen.query_one("Content").disabled = False
-            self.screen.query_one("#title_input").disabled = False
-            self.screen.query_one("#category_input").disabled = False
-            self.screen.query_one("#content_input").disabled = False
-            self.screen.focus_next("#content_input")
+            self.screen.query_one("#title-input").disabled = False
+            self.screen.query_one("#category-input").disabled = False
+            self.screen.query_one("#content-input").disabled = False
+            self.screen.focus_next("#content-input")
             self.can_focus = False
 
 
@@ -114,13 +114,13 @@ class DeleteScreen(ModalScreen[bool]):
     def compose(self) -> ComposeResult:
         yield Grid(
             Label("Are you sure you want to delete?", id="question"),
-            Button("Yes, Delete", variant="error", id="confirm_delete"),
+            Button("Yes, Delete", variant="error", id="confirm-delete"),
             Button("Cancel", variant="primary", id="cancel"),
             id="dialog",
         )
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
-        if event.button.id == "confirm_delete":
+        if event.button.id == "confirm-delete":
             self.dismiss(True)
         else:
             self.dismiss(False)

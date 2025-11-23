@@ -1,8 +1,9 @@
 import asyncio
+from datetime import datetime
 from random import choice, randint
 
 from textual.app import ComposeResult
-from textual.containers import HorizontalGroup, Horizontal, Vertical, VerticalGroup
+from textual.containers import HorizontalGroup, Horizontal, Vertical
 from textual.reactive import reactive
 from textual.widgets import Label, Static
 
@@ -15,10 +16,10 @@ class Stats(Static, can_focus=False):
     wordcount = Static()
     created = Static()
     updated = Static()
-    vis = Static(id="visual_panel")
+    age = Static()
+    vis = Static(id="visual-panel")
 
-    is_animating = reactive(False)
-    _typing_task = None
+    note_id = reactive(None)
     _rain_task = None
 
     # characters to rain
@@ -28,49 +29,21 @@ class Stats(Static, can_focus=False):
         with Horizontal():
             with Vertical():
                 with HorizontalGroup():
-                    yield Label("Wordcount: ")
-                    yield self.wordcount
-                with HorizontalGroup():
                     yield Label("Created on: ")
                     yield self.created
                 with HorizontalGroup():
                     yield Label("Updated on: ")
                     yield self.updated
+                with HorizontalGroup():
+                    yield Label("Wordcount: ")
+                    yield self.wordcount
+                with HorizontalGroup():
+                    yield Label("Age: ")
+                    yield self.age
             with Vertical():
                 with HorizontalGroup():
                     yield self.vis
 
-    note_id = reactive(None)
-
-    async def typing_visual(self):
-        frames = ["-", "\\", "|", "/"]
-        i = 0
-
-        while True:
-            if self.is_animating:
-                self.vis.update(frames[i])
-                i = (i + 1) % len(frames)
-            else:
-                self.vis.update(" ")
-            await asyncio.sleep(0.1)
-
-    async def letter_rain(self):
-        """
-        Continuously generate falling characters like Matrix rain.
-        """
-        lines = [""] * 10  # height of the rain display
-        width = 65  # width of display
-
-        while True:
-            # Add a new character line at top
-            new_line = "".join(choice(self.rain_chars) if randint(0, 5) == 0 else " " for _ in range(width))
-            lines.insert(0, new_line)
-            lines.pop()
-
-            # Update display
-            self.vis.update("\n".join(lines))
-
-            await asyncio.sleep(0.2)
 
     async def matrix_rain(
             self,
@@ -81,7 +54,7 @@ class Stats(Static, can_focus=False):
             density: float = 0.2
     ):
         """
-        Advanced Matrix rain simulation.
+        Matrix letter rain simulation.
 
         width     = number of columns
         height    = number of rows
@@ -90,9 +63,6 @@ class Stats(Static, can_focus=False):
         max_speed = slowest column delay
         """
 
-        # Each column has:
-        # head_y   → position of the bright head
-        # speed    → how fast it falls
         columns = [
             {
                 "pos": randint(-height, 0),  # start above screen
@@ -101,7 +71,6 @@ class Stats(Static, can_focus=False):
             for _ in range(width)
         ]
 
-        # Frame buffer
         screen = [[" " for _ in range(width)] for _ in range(height)]
 
         while True:
@@ -113,7 +82,6 @@ class Stats(Static, can_focus=False):
             # Update each column
             for col_idx, col in enumerate(columns):
 
-                # Chance to start a new drop
                 if col["pos"] < 0 and randint(0, 100) / 100 > density:
                     continue
 
@@ -127,6 +95,7 @@ class Stats(Static, can_focus=False):
                 # Render head (bright)
                 if 0 <= col["pos"] < height:
                     screen[col["pos"]][col_idx] = f"[b]{choice(self.rain_chars)}[/b]"
+
 
                 # Render fading trail (past 4 chars)
                 for fade_offset, style in [
@@ -143,11 +112,9 @@ class Stats(Static, can_focus=False):
                             char = self.rain_chars[(col_idx + y) % len(self.rain_chars)]
                         screen[y][col_idx] = f"[{style}]{char}[/{style}]"
 
-            # Apply update
             out = "\n".join("".join(row) for row in screen)
             self.vis.update(out)
 
-            # Control frame rate
             await asyncio.sleep(0.15)
 
     def load_data(self, data: object) -> None:
@@ -157,19 +124,17 @@ class Stats(Static, can_focus=False):
             self.wordcount.content = str(len(data["content"].split()))
             self.created.content = data["created"]
             self.updated.content = str(data["updated"])
-        except TypeError:
+            self.age.content = str(datetime.now() - datetime.strptime(data["created"], "%Y-%m-%d %H:%M:%S"))
+        except TypeError as e:
             pass
-            #self.border_title = str(data)  # TODO: something better in here
+            #self.border_title = str(e)  # TODO: something better in here
             # self.disabled = True
 
     def on_mount(self) -> None:
         self.border_title = "Stats"
         self.disabled = True
-        # self._typing_task = asyncio.create_task(self.typing_visual())
         self._rain_task = asyncio.create_task(self.matrix_rain())
 
     def on_unmount(self):
-        #if self._typing_task:
-        #    self._typing_task.cancel()
         if self._rain_task:
             self._rain_task.cancel()

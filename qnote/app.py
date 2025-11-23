@@ -32,7 +32,7 @@ class QnoteApp(App):
             with VerticalScroll(classes="column", id="left-pane", can_focus=False):
                 yield Sidebar("Notes", id="sidebar")
             with Vertical(classes="column", id="right-pane"):
-                yield Stats(classes="inactive", id="stats")
+                yield Stats(id="stats")
                 yield Content(classes="inactive", id="content")
 
 
@@ -50,8 +50,8 @@ class QnoteApp(App):
             else:
                 pass
         else:
-            if not self.query_one("#content_input").has_focus:
-                self.query_one("#content_input").text = str(node.node.label)
+            if not self.query_one("#content-input").has_focus:
+                self.query_one("#content-input").text = str(node.node.label)
                 self.query_one(Content).disabled = True
 
             self.query_one(Stats).load_data(node.node)

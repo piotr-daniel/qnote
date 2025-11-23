@@ -1,5 +1,4 @@
 import asyncio
-from random import choice
 
 from textual.app import ComposeResult
 from textual.containers import HorizontalGroup
@@ -21,8 +20,7 @@ class ContentInput(TextArea):
     def on_text_area_changed(self) -> None:
         if self.has_focus:
             self.parent.border_title = "Content - Edited"
-            letters = ["a", "p", "f", "o"]
-            #self.app.query_one("#stats").vis.content = choice(letters)
+
 
 
 class Content(Widget):
@@ -33,12 +31,12 @@ class Content(Widget):
         ("ctrl+delete", "cancel_edit", "Cancel"),
     ]
 
-    title_input = Input(id="title_input", compact=True, disabled=True)
-    category_input = Input(id="category_input", compact=True, disabled=True)
-    content_input = ContentInput(id="content_input", disabled=True)
+    title_input = Input(id="title-input", compact=True, disabled=True)
+    category_input = Input(id="category-input", compact=True, disabled=True)
+    content_input = ContentInput(id="content-input", disabled=True)
 
     def compose(self) -> ComposeResult:
-        with HorizontalGroup(id="content_header"):
+        with HorizontalGroup(id="content-header"):
             yield Label("Title: ")
             yield self.title_input
             yield Label("Category: ")
@@ -91,8 +89,6 @@ class Content(Widget):
 
         self.call_later(self._reselect)
         self.call_later(self._save_confirm_visual)
-
-        self.app.query_one("#stats").is_animating = False
 
 
     async def _save_confirm_visual(self):
