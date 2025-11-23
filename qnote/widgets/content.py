@@ -51,6 +51,7 @@ class Content(Widget):
     node = None
 
     sidebar: Widget | None = None
+    stats: Widget | None = None
 
 
     def load_data(self, node: object) -> None:
@@ -70,6 +71,7 @@ class Content(Widget):
     def on_mount(self) -> None:
         self.border_title = "Content"
         self.sidebar = self.app.query_one("#sidebar")
+        self.stats = self.app.query_one("#stats")
 
 
     def on_focus(self) -> None:
@@ -119,6 +121,7 @@ class Content(Widget):
 
         node = find_node(self.sidebar.root)
         if node:
+            self.sidebar.select_node(None)
             self.sidebar.select_node(node)
             self.sidebar.move_cursor(node)
 
