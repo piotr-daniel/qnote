@@ -1,0 +1,41 @@
+[project]
+name = "qnote"
+version = "0.0.0"
+description = "A terminal note-taking app powered by Textual"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+
+authors = [
+    { name = "Piotr Daniel", email = "piotr.daniel4@gmail.com" }
+]
+
+keywords = ["notes", "textual", "terminal", "cli"]
+
+dependencies = [
+    "textual",
+    "colorama==0.4.6",
+    "markdown-it-py==4.0.0",
+    "mdurl==0.1.2",
+    "Pygments==2.19.2",
+    "rich==14.2.0",
+    "shellingham==1.5.4",
+    "typer==0.20.0",
+    "typing_extensions==4.15.0"
+]
+
+[project.scripts]
+qnote = "qnote.main:main"
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.ruff]
+line-length = 88
+extend-select = ["I"]
+target-version = "py310"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+addopts = "-q"

@@ -1,19 +1,16 @@
-from idlelib.tree import TreeNode
 from textual.app import App, ComposeResult
 from textual.containers import Horizontal, Vertical, VerticalScroll
 from textual.widgets import Footer, Header
 
-import themes
-from utils import init_db
-from widgets.content import Content
-from widgets.stats import Stats
-from widgets.sidebar import Sidebar
+from . import themes
+from .utils import init_db
+from .widgets.content import Content
+from .widgets.sidebar import Sidebar
+from .widgets.stats import Stats
 
 
 class QnoteApp(App):
     """A Textual app to easily take and manage notes."""
-
-    init_db()
 
     AUTO_FOCUS = "#sidebar"
     CSS_PATH = "default.tcss"
@@ -24,10 +21,13 @@ class QnoteApp(App):
     ]
 
     def on_mount(self):
+        init_db()
+
         for theme in themes.all_themes:
             self.register_theme(theme)
 
         self.theme = "qnote"
+
 
     def compose(self) -> ComposeResult:
         """Create child widgets for the app."""
@@ -43,16 +43,18 @@ class QnoteApp(App):
                 yield Content(classes="inactive", id="content")
 
 
-    def on_tree_node_highlighted(self, node:TreeNode) -> None:
+    def on_tree_node_highlighted(self, node) -> None:
         """Show details of note highlighted note."""
+
+        content = self.query_one(Content)
 
         if not node.node.children:
             try:
-                self.query_one(Content).border_title = "Content"
-                self.query_one(Content).load_data(node.node)
+                content.border_title = "Content"
+                content.load_data(node.node)
                 self.query_one(Stats).load_data(node.node.data)
             except (AttributeError, TypeError) as e:
-                self.query_one(Content).text = str(e)
+                content.text = str(e)
             else:
                 pass
         else:
@@ -65,9 +67,7 @@ class QnoteApp(App):
 
     def action_toggle_dark(self) -> None:
         """An action to toggle dark mode."""
-        self.theme = (
-            "textual-light" if self.theme == "qnote" else "qnote"
-        )
+        self.theme = "textual-light" if self.theme == "qnote" else "qnote"
 
 
 if __name__ == "__main__":

@@ -6,7 +6,7 @@ from textual.reactive import reactive
 from textual.widget import Widget
 from textual.widgets import Input, Label, Rule, TextArea
 
-from utils import update_note_content, update_note_category, update_note_title
+from ..utils import update_note_category, update_note_content, update_note_title
 
 
 class ContentInput(TextArea):
@@ -20,7 +20,6 @@ class ContentInput(TextArea):
     def on_text_area_changed(self) -> None:
         if self.has_focus:
             self.parent.border_title = "Content - Edited"
-
 
 
 class Content(Widget):
@@ -44,13 +43,11 @@ class Content(Widget):
         yield Rule()
         yield self.content_input
 
-
     note_id = reactive(None)
     node = None
 
     sidebar: Widget | None = None
     stats: Widget | None = None
-
 
     def load_data(self, node: object) -> None:
         """Load note content to the widget."""
@@ -61,19 +58,16 @@ class Content(Widget):
             self.category_input.value = node.data["category"]
             self.content_input.text = node.data["content"]
         except TypeError:
-            #TODO: logging
+            # TODO: logging
             pass
-
 
     def on_mount(self) -> None:
         self.border_title = "Content"
         self.sidebar = self.app.query_one("#sidebar")
         self.stats = self.app.query_one("#stats")
 
-
     def on_focus(self) -> None:
         self.disabled = False
-
 
     def action_save_note(self) -> None:
         """Save note content to DB."""
@@ -88,7 +82,6 @@ class Content(Widget):
 
         self.call_later(self._reselect)
         self.call_later(self._save_confirm_visual)
-
 
     async def _save_confirm_visual(self):
         """Add a visual cue that note is saved."""
@@ -118,7 +111,6 @@ class Content(Widget):
             self.sidebar.select_node(None)
             self.sidebar.select_node(node)
             self.sidebar.move_cursor(node)
-
 
     def action_cancel_edit(self) -> None:
         """Cancel edit."""

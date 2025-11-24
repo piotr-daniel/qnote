@@ -69,3 +69,6 @@ npm-debug.log
 *.pid
 *.pid.lock
 *.pidfile
+
+# Ruff
+.ruff_cache/

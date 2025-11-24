@@ -3,11 +3,9 @@ from datetime import datetime
 from random import choice, randint
 
 from textual.app import ComposeResult
-from textual.containers import HorizontalGroup, Horizontal, Vertical
+from textual.containers import Horizontal, HorizontalGroup, Vertical
 from textual.reactive import reactive
 from textual.widgets import Label, Static
-
-from utils import get_notes
 
 
 class Stats(Static, can_focus=False):
@@ -44,14 +42,13 @@ class Stats(Static, can_focus=False):
                 with HorizontalGroup():
                     yield self.vis
 
-
     async def matrix_rain(
-            self,
-            width: int = 65,
-            height: int = 10,
-            min_speed: float = 0.03,
-            max_speed: float = 0.12,
-            density: float = 0.2
+        self,
+        width: int = 65,
+        height: int = 10,
+        min_speed: float = 0.03,
+        max_speed: float = 0.12,
+        density: float = 0.2,
     ):
         """
         Matrix letter rain simulation.
@@ -81,7 +78,6 @@ class Stats(Static, can_focus=False):
 
             # Update each column
             for col_idx, col in enumerate(columns):
-
                 if col["pos"] < 0 and randint(0, 100) / 100 > density:
                     continue
 
@@ -90,12 +86,13 @@ class Stats(Static, can_focus=False):
                 # Loop to top when reaching bottom
                 if col["pos"] >= height + 5:
                     col["pos"] = randint(-height, 0)
-                    col["speed"] = (randint(int(min_speed * 100), int(max_speed * 100)) / 100)
+                    col["speed"] = (
+                        randint(int(min_speed * 100), int(max_speed * 100)) / 100
+                    )
 
                 # Render head (bright)
                 if 0 <= col["pos"] < height:
                     screen[col["pos"]][col_idx] = f"[b]{choice(self.rain_chars)}[/b]"
-
 
                 # Render fading trail (past 4 chars)
                 for fade_offset, style in [
@@ -124,7 +121,9 @@ class Stats(Static, can_focus=False):
             self.wordcount.content = str(len(data["content"].split()))
             self.created.content = data["created"]
             self.updated.content = str(data["updated"])
-            self.age.content = str(datetime.now() - datetime.strptime(data["created"], "%Y-%m-%d %H:%M:%S"))
+            self.age.content = str(
+                datetime.now() - datetime.strptime(data["created"], "%Y-%m-%d %H:%M:%S")
+            )
         except TypeError:
             pass
             # TODO: logging

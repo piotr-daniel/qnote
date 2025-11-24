@@ -1,5 +1,5 @@
-from datetime import datetime
 import sqlite3
+from datetime import datetime
 from pathlib import Path
 
 DATA_DIR = Path.home() / ".qnote"
@@ -32,7 +32,13 @@ def add_note(title: str, content: str, category: str, tags: list = None):
     with get_connection() as conn:
         conn.execute(
             "INSERT INTO notes (title, content, category, tags, updated) VALUES (?, ?, ?, ?, ?)",
-            (title, content, category, tags_str, datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+            (
+                title,
+                content,
+                category,
+                tags_str,
+                datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            ),
         )
 
 
@@ -45,8 +51,10 @@ def delete_note(note_id):
 def update_note_content(note_id, new_content):
     """Update the content of a note."""
     with get_connection() as conn:
-        conn.execute("UPDATE notes SET content = ?, updated = ? WHERE id = ?",
-                     (new_content, datetime.now().strftime("%Y-%m-%d %H:%M:%S"), note_id))
+        conn.execute(
+            "UPDATE notes SET content = ?, updated = ? WHERE id = ?",
+            (new_content, datetime.now().strftime("%Y-%m-%d %H:%M:%S"), note_id),
+        )
 
 
 def update_note_title(note_id, new_title):
@@ -58,7 +66,9 @@ def update_note_title(note_id, new_title):
 def update_note_category(note_id, new_category):
     """Update the category of a note."""
     with get_connection() as conn:
-        conn.execute("UPDATE notes SET category = ? WHERE id = ?", (new_category, note_id))
+        conn.execute(
+            "UPDATE notes SET category = ? WHERE id = ?", (new_category, note_id)
+        )
 
 
 def get_note(note_id):
@@ -66,6 +76,7 @@ def get_note(note_id):
     with get_connection() as conn:
         cursor = conn.execute("SELECT * FROM notes WHERE id = ?", note_id)
         return cursor.fetchone()
+
 
 def get_notes():
     """Get all notes from database."""

@@ -1,0 +1,22 @@
+line-length = 88
+target-version = "py311"
+
+[lint]
+
+select = [
+    "E",  # pycodestyle errors
+    "F",  # pyflakes
+    "W",  # pycodestyle warnings
+    "N",  # naming
+    "I",  # import sorting
+    "UP", # pyupgrade - modern code
+    "B",  # bugbear - catches mistakes
+]
+
+
+fixable = ["ALL"]
+
+[format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"

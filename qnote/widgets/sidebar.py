@@ -1,9 +1,15 @@
 from textual.app import ComposeResult
 from textual.containers import Grid
-from textual.screen import ModalScreen
 from textual.reactive import reactive
+from textual.screen import ModalScreen
 from textual.widgets import Button, Label, Tree
-from utils import add_note, delete_note, get_categories, get_notes, update_note_content, update_note_category
+
+from ..utils import (
+    add_note,
+    delete_note,
+    get_categories,
+    get_notes,
+)
 
 
 class Sidebar(Tree, can_focus=True):
@@ -14,7 +20,6 @@ class Sidebar(Tree, can_focus=True):
         ("ctrl+e", "edit_content", "Edit"),
         ("ctrl+delete", "check_delete_note", "Delete"),
     ]
-
 
     def on_mount(self):
         self.show_root = False
@@ -28,7 +33,6 @@ class Sidebar(Tree, can_focus=True):
         self.screen.query_one("Content").add_class("inactive")
         self.update_tree()
 
-
     def update_tree(self):
         self.clear()
         categories = get_categories()
@@ -36,15 +40,17 @@ class Sidebar(Tree, can_focus=True):
             cat = self.root.add(category, expand=True)
             for note in get_notes():
                 if note[3] == category:
-                    cat.add_leaf(f"{note[1]} ({note[6]})",
-                        data={"id": note[0],
-                              "title": note[1],
-                              "content": note[2],
-                              "category": note[3],
-                              "tags": note[4],
-                              "created": note[5],
-                              "updated": note[6]
-                              }
+                    cat.add_leaf(
+                        f"{note[1]} ({note[6]})",
+                        data={
+                            "id": note[0],
+                            "title": note[1],
+                            "content": note[2],
+                            "category": note[3],
+                            "tags": note[4],
+                            "created": note[5],
+                            "updated": note[6],
+                        },
                     )
 
     def action_new_note(self) -> None:
