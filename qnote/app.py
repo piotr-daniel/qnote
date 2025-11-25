@@ -16,8 +16,10 @@ class QnoteApp(App):
     CSS_PATH = "default.tcss"
     TITLE = "QNote"
     BINDINGS = [
-        ("d", "toggle_dark", "Toggle dark mode"),
+        #("d", "toggle_dark", "Toggle dark mode"),
         ("ctrl+q", "quit", "Quit"),
+        ("ctrl+l", "toggle_lumen_off", "Lumen Off"),
+        ("ctrl+l", "toggle_lumen_on", "Lumen On")
     ]
 
     def on_mount(self):
@@ -25,7 +27,6 @@ class QnoteApp(App):
 
         for theme in themes.all_themes:
             self.register_theme(theme)
-
         self.theme = "qnote"
 
 
@@ -47,6 +48,7 @@ class QnoteApp(App):
         """Show details of note highlighted note."""
 
         content = self.query_one(Content)
+        content_input = self.query_one("#content-input")
 
         if not node.node.children:
             try:
@@ -58,16 +60,35 @@ class QnoteApp(App):
             else:
                 pass
         else:
-            if not self.query_one("#content-input").has_focus:
-                self.query_one("#content-input").text = str(node.node.label)
-                self.query_one(Content).disabled = True
+            if not content_input.has_focus:
+                content_input.text = str(node.node.label)
+                content.disabled = True
 
             self.query_one(Stats).load_data(node.node)
 
 
     def action_toggle_dark(self) -> None:
         """An action to toggle dark mode."""
-        self.theme = "textual-light" if self.theme == "qnote" else "qnote"
+        self.theme = "gruvbox" if self.theme == "qnote" else "qnote"
+
+
+    def action_toggle_lumen_off(self) -> None:
+        """An action to toggle lumen mode."""
+        self.query_one(Stats).lumen_active = False
+        self.query_one("#lumen").visible = False
+
+
+    def action_toggle_lumen_on(self) -> None:
+        """An action to toggle lumen mode."""
+        self.query_one(Stats).lumen_active = True
+        self.query_one("#lumen").visible = True
+
+
+    def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
+        """Check if an action may run."""
+        if action == "toggle_lumen_off" and not self.query_one(Stats).lumen_active:
+            return False
+        return True
 
 
 if __name__ == "__main__":

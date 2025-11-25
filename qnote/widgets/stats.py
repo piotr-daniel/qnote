@@ -15,13 +15,14 @@ class Stats(Static, can_focus=False):
     created = Static()
     updated = Static()
     age = Static()
-    vis = Static(id="visual-panel")
+    lumen = Static(id="lumen")
 
     note_id = reactive(None)
+    lumen_active = reactive(True, bindings=True)
     _rain_task = None
 
-    # characters to rain
     rain_chars = list("abcdefgmnopxyz0123456789-)(;@#~óśćźż")
+
 
     def compose(self) -> ComposeResult:
         with Horizontal():
@@ -40,7 +41,8 @@ class Stats(Static, can_focus=False):
                     yield self.age
             with Vertical():
                 with HorizontalGroup():
-                    yield self.vis
+                    yield self.lumen
+
 
     async def matrix_rain(
         self,
@@ -110,28 +112,29 @@ class Stats(Static, can_focus=False):
                         screen[y][col_idx] = f"[{style}]{char}[/{style}]"
 
             out = "\n".join("".join(row) for row in screen)
-            self.vis.update(out)
+            self.lumen.update(out)
 
             await asyncio.sleep(0.15)
+
 
     def load_data(self, data: object) -> None:
         """Load note content to the widget."""
         try:
             self.note_id = data["id"]
             self.wordcount.content = str(len(data["content"].split()))
-            self.created.content = data["created"]
+            self.created.content = str(data["created"])
             self.updated.content = str(data["updated"])
-            self.age.content = str(
-                datetime.now() - datetime.strptime(data["created"], "%Y-%m-%d %H:%M:%S")
-            )
+            self.age.content = str(datetime.now() - data["created"])
         except TypeError:
             pass
             # TODO: logging
+
 
     def on_mount(self) -> None:
         self.border_title = "Stats"
         self.disabled = True
         self._rain_task = asyncio.create_task(self.matrix_rain())
+
 
     def on_unmount(self):
         if self._rain_task:

@@ -106,7 +106,7 @@ Stats {
     width: 2fr;
 }
 
-#visual-panel {
+#lumen {
     height: 10;
     color: $accent;
 }

@@ -1,3 +1,4 @@
+from datetime import datetime
 from textual.app import ComposeResult
 from textual.containers import Grid
 from textual.reactive import reactive
@@ -41,15 +42,15 @@ class Sidebar(Tree, can_focus=True):
             for note in get_notes():
                 if note[3] == category:
                     cat.add_leaf(
-                        f"{note[1]} ({note[6]})",
+                        f"{note[1]}{' ' * (40-len(note[1]))} [{datetime.strptime(note[6], "%Y-%m-%d %H:%M:%S").date()}]",
                         data={
                             "id": note[0],
                             "title": note[1],
                             "content": note[2],
                             "category": note[3],
                             "tags": note[4],
-                            "created": note[5],
-                            "updated": note[6],
+                            "created": datetime.strptime(note[5], "%Y-%m-%d %H:%M:%S"),
+                            "updated": datetime.strptime(note[6], "%Y-%m-%d %H:%M:%S"),
                         },
                     )
 
