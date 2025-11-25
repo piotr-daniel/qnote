@@ -42,7 +42,7 @@ class Sidebar(Tree, can_focus=True):
             for note in get_notes():
                 if note[3] == category:
                     cat.add_leaf(
-                        f"{note[1]}{' ' * (40-len(note[1]))} [{datetime.strptime(note[6], "%Y-%m-%d %H:%M:%S").date()}]",
+                        f"{note[1]}{' ' * (45-len(note[1]))} [{datetime.strptime(note[6], "%Y-%m-%d %H:%M:%S").date()}]",
                         data={
                             "id": note[0],
                             "title": note[1],
@@ -87,7 +87,7 @@ class Sidebar(Tree, can_focus=True):
             delete_note(note_id)
             self.update_tree()
             self.select_node(None)
-            self.move_cursor_to_line(cursor_line)
+            self.move_cursor_to_line(cursor_line-1)
             self.refresh()
 
     def action_check_delete_note(self) -> None:

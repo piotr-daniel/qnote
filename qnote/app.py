@@ -49,6 +49,8 @@ class QnoteApp(App):
 
         content = self.query_one(Content)
         content_input = self.query_one("#content-input")
+        category_input = self.query_one("#category-input")
+        title_input = self.query_one("#title-input")
 
         if not node.node.children:
             try:
@@ -61,7 +63,9 @@ class QnoteApp(App):
                 pass
         else:
             if not content_input.has_focus:
-                content_input.text = str(node.node.label)
+                content_input.text = ""
+                category_input.value = ""
+                title_input.value = ""
                 content.disabled = True
 
             self.query_one(Stats).load_data(node.node)
