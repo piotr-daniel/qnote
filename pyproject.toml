@@ -1,10 +1,10 @@
 [project]
 name = "qnote"
-version = "0.0.0"
-description = "A terminal note-taking app powered by Textual"
+version = "0.0.2"
+description = "A terminal-based, local-first, note-taking app powered by Textual"
 readme = "README.md"
 requires-python = ">=3.10"
-license = { text = "MIT" }
+license = "MIT"
 
 authors = [
     { name = "Piotr Daniel", email = "piotr.daniel4@gmail.com" }
@@ -39,3 +39,9 @@ target-version = "py310"
 [tool.pytest.ini_options]
 pythonpath = ["."]
 addopts = "-q"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.package-data]
+qnote = ["*.tcss", "*.css", "*.md"]
