@@ -23,8 +23,6 @@ class QnoteApp(App):
     ]
 
     def on_mount(self):
-        init_db()
-
         for theme in themes.all_themes:
             self.register_theme(theme)
         self.theme = "qnote"
@@ -52,13 +50,14 @@ class QnoteApp(App):
         category_input = self.query_one("#category-input")
         title_input = self.query_one("#title-input")
 
+
         if not node.node.children:
             try:
                 content.border_title = "Content"
                 content.load_data(node.node)
                 self.query_one(Stats).load_data(node.node.data)
             except (AttributeError, TypeError) as e:
-                content.text = str(e)
+                content_input.text = str(e)
             else:
                 pass
         else:
@@ -96,5 +95,6 @@ class QnoteApp(App):
 
 
 if __name__ == "__main__":
+    init_db()
     app = QnoteApp()
     app.run()
