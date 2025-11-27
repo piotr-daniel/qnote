@@ -1,3 +1,18 @@
+## Unreleased
+### Added
+- Search function to filter the Tree with matching results
+
+### Changed
+- Moved CHANGELOG to the root
+
+### Fixed
+
+
+### Removed
+
+
+---
+
 ## [0.0.2] - 2025-11-25
 ### Fixed
 - PyPI setup in project.toml

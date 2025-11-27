@@ -5,7 +5,7 @@ from textual.widgets import Footer, Header
 from . import themes
 from .utils import init_db
 from .widgets.content import Content
-from .widgets.sidebar import Sidebar
+from .widgets.sidebar import Sidebar, Search
 from .widgets.stats import Stats
 
 
@@ -17,6 +17,7 @@ class QnoteApp(App):
     TITLE = "QNote"
     BINDINGS = [
         #("d", "toggle_dark", "Toggle dark mode"),
+        ("/", "search_note", "Search"),
         ("ctrl+q", "quit", "Quit"),
         ("ctrl+l", "toggle_lumen_off", "Lumen Off"),
         ("ctrl+l", "toggle_lumen_on", "Lumen On")
@@ -36,7 +37,9 @@ class QnoteApp(App):
 
         with Horizontal():
             with VerticalScroll(classes="column", id="left-pane", can_focus=False):
+                yield Search(id="search", placeholder="Type / to Search...")
                 yield Sidebar("Notes", id="sidebar")
+
             with Vertical(classes="column", id="right-pane"):
                 yield Stats(id="stats")
                 yield Content(classes="inactive", id="content")
@@ -70,6 +73,10 @@ class QnoteApp(App):
             self.query_one(Stats).load_data(node.node)
 
 
+    def action_search_note(self) -> None:
+        self.screen.focus_next("#search")
+
+
     def action_toggle_dark(self) -> None:
         """An action to toggle dark mode."""
         self.theme = "gruvbox" if self.theme == "qnote" else "qnote"
@@ -90,6 +97,8 @@ class QnoteApp(App):
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
         """Check if an action may run."""
         if action == "toggle_lumen_off" and not self.query_one(Stats).lumen_active:
+            return False
+        if action == "search_note" and (self.query_one("#content-input").has_focus or self.query_one("#search").has_focus):
             return False
         return True
 

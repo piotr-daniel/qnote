@@ -84,10 +84,16 @@ def get_note(note_id):
         return cursor.fetchone()
 
 
-def get_notes():
+def get_notes(text: str=None) -> list:
     """Get all notes from database."""
     with get_connection() as conn:
-        cursor = conn.execute("SELECT * FROM notes ORDER BY updated DESC;")
+        if text:
+            cursor = conn.execute(
+                "SELECT * FROM notes WHERE title LIKE ? OR category LIKE ? OR content LIKE ? ORDER BY updated DESC;",
+                ("%"+text+"%", "%"+text+"%", "%"+text+"%")
+            )
+        else:
+            cursor = conn.execute("SELECT * FROM notes ORDER BY updated DESC;")
         return cursor.fetchall()
 
 

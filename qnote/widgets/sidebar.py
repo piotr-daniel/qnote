@@ -3,7 +3,7 @@ from textual.app import ComposeResult
 from textual.containers import Grid
 from textual.reactive import reactive
 from textual.screen import ModalScreen
-from textual.widgets import Button, Label, Tree
+from textual.widgets import Button, Input, Label, Tree
 
 from ..utils import (
     add_note,
@@ -11,6 +11,23 @@ from ..utils import (
     get_categories,
     get_notes,
 )
+
+
+class Search(Input):
+    """Search note widget."""
+
+    sidebar = reactive(None)
+
+    def on_mount(self):
+        self.sidebar = self.screen.query_one('Sidebar')
+
+    def on_input_changed(self):
+        self.sidebar.update_tree(self.value)
+
+    def action_submit(self) -> None:
+        """Submit search note."""
+
+        self.screen.focus_next("Sidebar")
 
 
 class Sidebar(Tree, can_focus=True):
@@ -31,15 +48,23 @@ class Sidebar(Tree, can_focus=True):
 
     def on_focus(self) -> None:
         self.screen.query_one("Content").disabled = True
-        self.screen.query_one("Content").add_class("inactive")
-        self.update_tree()
+        self.update_tree(self.screen.query_one("#search").value)
 
-    def update_tree(self):
+    def update_tree(self, text: str=None):
         self.clear()
-        categories = get_categories()
+
+        notes = get_notes(text) if text else get_notes()
+        categories = list(dict.fromkeys([n[3] for n in notes]))
+        categories.sort()
+
+        self.can_focus = False if not notes else True
+        if text:
+            #self.move_cursor_to_line(1)
+            pass
+
         for category in categories:
             cat = self.root.add(category, expand=True)
-            for note in get_notes():
+            for note in notes:
                 if note[3] == category:
                     cat.add_leaf(
                         f"{note[1]}{' ' * (45-len(note[1]))} [{datetime.strptime(note[6], "%Y-%m-%d %H:%M:%S").date()}]",
@@ -109,7 +134,8 @@ class Sidebar(Tree, can_focus=True):
         has_children = len(self.cursor_node.children) > 0
 
         if not has_children:
-            self.app.query_one("#stats").is_animating = True
+            #self.app.query_one("#stats").is_animating = True
+            self.screen.query_one("#search").can_focus = False
             self.screen.query_one("Content").disabled = False
             self.screen.query_one("#title-input").disabled = False
             self.screen.query_one("#category-input").disabled = False

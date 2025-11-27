@@ -1,6 +1,6 @@
 [project]
 name = "qnote"
-version = "0.0.3"
+version = "0.0.4.dev0"
 description = "A terminal-based, local-first, note-taking app powered by Textual"
 readme = "README.md"
 requires-python = ">=3.10"

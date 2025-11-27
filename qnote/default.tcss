@@ -47,7 +47,7 @@ Input .input--cursor {
 
 Sidebar {
     border: $border;
-    height: 100%;
+    height: 95%;
     padding: 0 1;
 }
 
@@ -95,6 +95,11 @@ Stats {
     width: 1fr;
 }
 
+#lumen {
+    height: 10;
+    color: $accent;
+}
+
 #question {
     column-span: 2;
     height: 1fr;
@@ -106,7 +111,7 @@ Stats {
     width: 2fr;
 }
 
-#lumen {
-    height: 10;
-    color: $accent;
+#search {
+    border: $border;
+    width: 1fr;
 }
