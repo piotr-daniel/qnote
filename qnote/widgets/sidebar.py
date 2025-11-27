@@ -76,6 +76,8 @@ class Sidebar(Tree, can_focus=True):
 
         # Move focus and cursor to the content text area for instant access
         self.screen.query_one("Content").disabled = False
+        self.screen.query_one("#title-input").disabled = False
+        self.screen.query_one("#category-input").disabled = False
         self.screen.query_one("#content-input").disabled = False
         self.screen.focus_next("#content-input")
         self.can_focus = False
