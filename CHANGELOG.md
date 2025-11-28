@@ -1,6 +1,7 @@
 ## Unreleased
 ### Added
 - Search function to filter the Tree with matching results
+- Setting screen
 
 ### Changed
 - Moved CHANGELOG to the root

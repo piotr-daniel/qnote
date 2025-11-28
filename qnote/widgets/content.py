@@ -64,9 +64,9 @@ class Content(Widget):
 
     def on_mount(self) -> None:
         self.border_title = "Content"
-        self.search = self.app.query_one("#search")
-        self.sidebar = self.app.query_one("#sidebar")
-        self.stats = self.app.query_one("#stats")
+        self.search = self.screen.query_one("#search")
+        self.sidebar = self.screen.query_one("#sidebar")
+        self.stats = self.screen.query_one("#stats")
 
     def on_focus(self) -> None:
         self.disabled = False

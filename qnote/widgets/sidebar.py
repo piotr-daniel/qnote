@@ -8,7 +8,6 @@ from textual.widgets import Button, Input, Label, Tree
 from ..utils import (
     add_note,
     delete_note,
-    get_categories,
     get_notes,
 )
 
@@ -58,9 +57,6 @@ class Sidebar(Tree, can_focus=True):
         categories.sort()
 
         self.can_focus = False if not notes else True
-        if text:
-            #self.move_cursor_to_line(1)
-            pass
 
         for category in categories:
             cat = self.root.add(category, expand=True)
