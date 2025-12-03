@@ -13,8 +13,7 @@ class MainScreen(Screen):
 
     BINDINGS = [
         ("/", "search_note", "Search"),
-        ("ctrl+l", "toggle_lumen_off", "Lumen Off"),
-        ("ctrl+l", "toggle_lumen_on", "Lumen On"),
+        ("ctrl+s", "app.switch_mode('settings')", "Settings"),
     ]
 
     def compose(self) -> ComposeResult:
@@ -65,22 +64,17 @@ class MainScreen(Screen):
         self.screen.focus_next("#search")
 
 
-    def action_toggle_lumen_off(self) -> None:
-        """An action to toggle lumen mode."""
-        self.screen.query_one(Stats).lumen_active = False
-        self.screen.query_one("#lumen").visible = False
-
-
-    def action_toggle_lumen_on(self) -> None:
-        """An action to toggle lumen mode."""
-        self.screen.query_one(Stats).lumen_active = True
-        self.screen.query_one("#lumen").visible = True
-
-
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
         """Check if an action may run."""
-        if action == "toggle_lumen_off" and not self.screen.query_one(Stats).lumen_active:
-            return False
         if action == "search_note" and (self.screen.query_one("#content-input").has_focus or self.screen.query_one("#search").has_focus):
             return False
         return True
+
+
+    def _on_screen_resume(self):  #TODO: changing settings
+        if self.app.lumen_theme:
+            self.query_one(Stats).lumen.play_animation(self.app.lumen_theme)
+
+        else:
+            #self.query_one(Stats).lumen_task.cancel()
+            pass

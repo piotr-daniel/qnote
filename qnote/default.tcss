@@ -45,6 +45,10 @@ Input .input--cursor {
     background: $accent;
 }
 
+Select {
+    color: $accent;
+}
+
 Sidebar {
     border: $border;
     height: 95%;
@@ -64,6 +68,21 @@ Stats {
 
 .column {
     padding: 1 1;
+}
+
+.setting-column {
+    padding: 1 1;
+    border: $border
+}
+
+.setting-element{
+    align: center middle;
+    content-align: center middle;
+    height: auto;
+}
+
+.setting-label {
+    width: 50%;
 }
 
 .tree--cursor {
