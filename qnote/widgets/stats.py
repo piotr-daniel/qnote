@@ -18,9 +18,6 @@ class Stats(Static, can_focus=False):
     lumen = Lumen(id="lumen")
 
     note_id = reactive(None)
-    lumen_active = reactive(True, bindings=True)
-
-    rain_chars = list("abcdefghijklmnopqrstuvwxyz0123456789-)(;@#~óśćźż")
 
 
     def compose(self) -> ComposeResult:

@@ -122,7 +122,8 @@ def get_categories():
 
 def load_all_settings():
     with get_connection() as conn:
-        for key, value in conn.execute("SELECT key,value FROM settings"):
+        cursor = conn.execute("SELECT key,value FROM settings")
+        for key, value in cursor:
             try:
                 SETTINGS[key] = json.loads(value)
             except IndexError:
@@ -136,4 +137,4 @@ def get_setting(key, default=None):
 def set_setting(key, value):
     SETTINGS[key] = value
     with get_connection() as conn:
-        conn.execute("INSERT OR REPLACE INTO settings VALUES (?,?)", (key, json.dumps(value)))
+        conn.execute("UPDATE settings SET value = ? WHERE key = ?", (json.dumps(value), key))

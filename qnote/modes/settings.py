@@ -1,3 +1,4 @@
+from textual import events
 from textual.app import ComposeResult
 from textual.containers import Horizontal, HorizontalGroup, VerticalGroup
 from textual.message import Message
@@ -24,12 +25,15 @@ class LumenSelect(Widget):
         ("Snake", "snake")
     ]
 
-    select_lumen: Select[str] = Select(options, id="select-lumen", allow_blank=False, compact=True, value="letter_rain")
+    select_lumen: Select[str] = Select(options, id="select-lumen", allow_blank=False, compact=True)
 
     def compose(self) -> ComposeResult:
         with HorizontalGroup():
             yield Label("Select Lumen: ", classes="setting-label")
             yield self.select_lumen
+
+    def on_mount(self) -> None:
+        self.select_lumen.value = get_setting("lumen")
 
     def on_select_changed(self, event: Select.Changed) -> None:
         self.post_message(self.LumenChanged(event.value))
@@ -53,11 +57,10 @@ class SettingsScreen(Screen):
             with VerticalGroup(classes="setting-column"):
                 yield LumenSelect(classes="setting-element")
             with VerticalGroup(classes="setting-column"):
-                yield Label()
+                yield Label("Future Release")
             with VerticalGroup(classes="setting-column"):
-                yield Label()
+                yield Label("Future Release")
 
     def on_lumen_select_lumen_changed(self, message: LumenSelect.LumenChanged):
         message.stop()
         self.app.post_message(message)
-

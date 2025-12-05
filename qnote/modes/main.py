@@ -4,6 +4,7 @@ from textual.screen import Screen
 from textual.widgets import Footer, Header
 
 
+from ..utils import get_setting
 from ..widgets.content import Content
 from ..widgets.sidebar import Sidebar, Search
 from ..widgets.stats import Stats
@@ -13,13 +14,13 @@ class MainScreen(Screen):
 
     BINDINGS = [
         ("/", "search_note", "Search"),
-        ("ctrl+s", "app.switch_mode('settings')", "Settings"),
+        ("f12", "app.switch_mode('settings')", "Settings"),
     ]
 
     def compose(self) -> ComposeResult:
         """Create child widgets for the app."""
 
-        yield Header()
+        yield Header(icon="")
         yield Footer()
 
         with Horizontal():
@@ -72,9 +73,4 @@ class MainScreen(Screen):
 
 
     def _on_screen_resume(self):  #TODO: changing settings
-        if self.app.lumen_theme:
-            self.query_one(Stats).lumen.play_animation(self.app.lumen_theme)
-
-        else:
-            #self.query_one(Stats).lumen_task.cancel()
-            pass
+        self.query_one(Stats).lumen.play_animation(get_setting("lumen"))
