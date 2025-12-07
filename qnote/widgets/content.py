@@ -27,7 +27,7 @@ class Content(Widget):
 
     BINDINGS = [
         ("ctrl+s", "save_note", "Save Note"),
-        ("ctrl+delete", "cancel_edit", "Cancel"),
+        ("escape", "cancel_edit", "Cancel"),
     ]
 
     title_input = Input(id="title-input", compact=True, disabled=True)
