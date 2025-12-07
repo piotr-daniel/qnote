@@ -12,7 +12,7 @@ class Lumen(Static, can_focus=False):
     rain_chars = list("abcdefghijklmnopqrstuvwxyz0123456789-)(;@#~óśćźż")
 
     async def on_mount(self):
-        self.play_animation("letter_rain")
+        self.play_animation("qnote")
 
     def on_unmount(self):
         if self.current_worker:
@@ -31,14 +31,14 @@ class Lumen(Static, can_focus=False):
             self.current_worker = None
 
         animations = {
-            "letter_rain": self.letter_rain,
+            "qnote": self.qnote_animation,
             "pulse": self.pulse_animation,
             "waves": self.wave_animation,
             "snake": self.snake_animation,
             "none": self.no_animation
         }
 
-        coro = animations.get(name)
+        coro = animations.get(name, self.qnote_animation)
         if not coro:
             self.update(f"[red]Unknown animation: {name}")
             return
@@ -59,7 +59,7 @@ class Lumen(Static, can_focus=False):
 
 
     # Lumen Animation 1 — Letter Rain (Standard QNote)
-    async def letter_rain(
+    async def qnote_animation(
         self,
         width: int = 65,
         height: int = 10,
@@ -122,9 +122,11 @@ class Lumen(Static, can_focus=False):
 
 
     # Animation 2 — Placeholder Pulse
-    async def pulse_animation(self):
+    async def pulse_animation(self, width: int = 65, height: int = 10,):
         """Simple placeholder animation."""
         visible = True
+        screen = [[" " for _ in range(width)] for _ in range(height)]
+
         while True:
             self.update("[green]●[/green]" if visible else " ")
             visible = not visible
@@ -139,7 +141,7 @@ class Lumen(Static, can_focus=False):
         while True:
             self.update(pattern[i:] + pattern[:i])
             i = (i + 1) % len(pattern)
-            await asyncio.sleep(0.1)
+            await asyncio.sleep(0.3)
 
     # Animation 4 — Placeholder Snake
     async def snake_animation(self, width: int = 65, height: int = 10, delay: float = 0.15):

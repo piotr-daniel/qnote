@@ -137,4 +137,4 @@ def get_setting(key, default=None):
 def set_setting(key, value):
     SETTINGS[key] = value
     with get_connection() as conn:
-        conn.execute("UPDATE settings SET value = ? WHERE key = ?", (json.dumps(value), key))
+        conn.execute("REPLACE INTO settings VALUES (?, ?)", (key, json.dumps(value)))

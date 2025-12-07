@@ -72,17 +72,23 @@ Stats {
 
 .setting-column {
     padding: 1 1;
-    border: $border
+    border: $border;
+    align: center middle;
 }
 
 .setting-element{
     align: center middle;
     content-align: center middle;
     height: auto;
+    width: 20%;
+    /*border: $border;*/
 }
 
 .setting-label {
-    width: 50%;
+    width: auto;
+    margin: 0 1;
+    /*background: $secondary;*/
+    color: $accent;
 }
 
 .tree--cursor {

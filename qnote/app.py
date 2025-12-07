@@ -3,7 +3,7 @@ from textual.app import App
 from . import themes
 from .modes.settings import SettingsScreen
 from .modes.main import MainScreen
-from .utils import init_db, load_all_settings
+from .utils import init_db, load_all_settings, get_setting
 
 
 class QnoteApp(App):
@@ -35,7 +35,7 @@ class QnoteApp(App):
         self.switch_mode("main")
         for theme in themes.all_themes:
             self.register_theme(theme)
-        self.theme = "qnote"
+        self.theme = get_setting("theme", "qnote")
 
 
 if __name__ == "__main__":
