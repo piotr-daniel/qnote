@@ -2,9 +2,11 @@
 ### Added
 - Search function to filter the Tree with matching results
 - Setting screen with Lumen and Theme selection
+- 'Snake' lumen
 
 ### Changed
 - Moved CHANGELOG to the root
+- Change 'cancel note edit' hk to esc 
 
 ### Fixed
 

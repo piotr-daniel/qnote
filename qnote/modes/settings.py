@@ -20,8 +20,8 @@ class LumenSelect(Widget):
     options = [
         ("None", "none"),
         ("QNote", "qnote"),
-        ("Waves", "waves"),
-        ("Pulse", "pulse"),
+        #("Waves", "waves"),
+        #("Pulse", "pulse"),
         ("Snake", "snake")
     ]
 
@@ -43,7 +43,7 @@ class LumenSelect(Widget):
 class ThemeSelect(Widget):
 
     class ThemeChanged(Message, bubble=True):
-        """Sent when the 'lumen' changes."""
+        """Sent when the 'theme' changes."""
 
         def __init__(self, value: str) -> None:
             super().__init__()

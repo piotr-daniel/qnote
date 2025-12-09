@@ -1,5 +1,5 @@
 import asyncio
-from random import choice, randint, random
+from random import choice, randint
 
 from textual.widgets import Static
 
@@ -122,14 +122,47 @@ class Lumen(Static, can_focus=False):
 
 
     # Animation 2 — Placeholder Pulse
-    async def pulse_animation(self, width: int = 65, height: int = 10,):
+    async def pulse_animation(self, width: int = 65, height: int = 10):
         """Simple placeholder animation."""
-        visible = True
+        frame = 0
         screen = [[" " for _ in range(width)] for _ in range(height)]
 
         while True:
-            self.update("[green]●[/green]" if visible else " ")
-            visible = not visible
+            match frame:
+                case 1:
+                    for row in range(height):
+                        for col in range(width):
+                            screen[row][col] = " "
+
+                case 2:
+                    for row in range(height):
+                        for col in range(width):
+                            if row == int(height/2)-1 and col == int(width/2):
+                                screen[row][col] = "●"
+
+                case 3:
+                    centre = [int(height / 2) - 1, int(width / 2)]
+                    for row in range(height):
+                        for col in range(width):
+                            if (row == centre[0]+1 or row == centre[0]-1) and (col == centre[1]+1 or col == centre[1]-1):
+                                screen[row][col] = "●"
+
+                case 4:
+                    centre = [int(height / 2) - 1, int(width / 2)]
+                    for row in range(height):
+                        for col in range(width):
+                            if (row == centre[0] + 2 or row == centre[0] - 2) and (
+                                    col == centre[1] + 2 or col == centre[1] - 2):
+                                screen[row][col] = "●"
+
+                case 5:
+                    frame = 0
+
+            #self.update("[green]●[/green]" if visible else " ")
+
+
+            self.update("\n".join("".join(row) for row in screen))
+            frame += 1
             await asyncio.sleep(0.5)
 
 
@@ -143,55 +176,44 @@ class Lumen(Static, can_focus=False):
             i = (i + 1) % len(pattern)
             await asyncio.sleep(0.3)
 
-    # Animation 4 — Placeholder Snake
-    async def snake_animation(self, width: int = 65, height: int = 10, delay: float = 0.15):
-        """Autonomous snake game animation (no user input)."""
+    # Animation 4 — Snake
+    async def snake_animation(self, width: int = 65, height: int = 10, delay: float = 0.15, max_length: int = 99):
+        """Autonomous snake game animation."""
 
-        # Initial snake configuration
         snake = [(width // 2, height // 2)]
-        direction = (1, 0)  # moving right
-        food = (randint(0, width - 1), randint(0, height - 1))
+        food = (randint(1, width - 2), randint(1, height - 2))
         length = 5
 
-        # Possible movement directions
-        dirs = [
-            (1, 0),  # right
-            (-1, 0),  # left
-            (0, 1),  # down
-            (0, -1),  # up
-        ]
-
         while True:
-
-            # --------------- SNAKE MOVEMENT LOGIC -----------------
-
-            # Randomly change direction (but avoid reversing)
-            if random() < 0.15:
-                new_dir = choice(dirs)
-                if new_dir[0] != -direction[0] or new_dir[1] != -direction[1]:
-                    direction = new_dir
-
             # Compute new head position
             head_x, head_y = snake[0]
-            new_head = (
-                (head_x + direction[0]) % width,  # wrap horizontally
-                (head_y + direction[1]) % height,  # wrap vertically
-            )
+            food_x, food_y = food
+            new_head = snake[0]
+
+            if head_x > food_x:  #TODO: avoid itself
+                new_head = (head_x - 1, head_y)
+            if head_x < food_x:
+                new_head = (head_x + 1, head_y)
+            if head_y > food_y:
+                new_head = (head_x, head_y - 1)
+            if head_y < food_y:
+                new_head = (head_x, head_y + 1)
 
             # Add new head
             snake.insert(0, new_head)
 
             # If snake eats food
-            if new_head == food:
+            if new_head == food and length < max_length:
                 length += 1
-                food = (randint(0, width - 1), randint(0, height - 1))
+                food = (randint(1, width - 2), randint(1, height - 2))
+            if new_head == food and length == max_length:
+                length = 5
+                food = (randint(1, width - 2), randint(1, height - 2))
             else:
-                # Trim to current length
                 snake = snake[:length]
 
-            # --------------- RENDER FRAME -------------------------
-
             screen = [[" " for _ in range(width)] for _ in range(height)]
+            fade_off = ["$accent", "$accent", "#b85727", "#994b22", "#80381b", "#6a2a15",]
 
             # Draw food
             fx, fy = food
@@ -200,14 +222,20 @@ class Lumen(Static, can_focus=False):
             # Draw snake (head highlighted)
             for i, (x, y) in enumerate(snake):
                 if i == 0:
-                    screen[y][x] = "[green]■[/green]"  # head
+                    screen[y][x] = f"[{fade_off[i]}]■[/{fade_off[i]}]"
+                elif i == 1:
+                    screen[y][x] = f"[{fade_off[i]}]■[/{fade_off[i]}]"
+                elif i == 2:
+                    screen[y][x] = f"[{fade_off[i]}]■[/{fade_off[i]}]"
+                elif i == 3:
+                    screen[y][x] = f"[{fade_off[i]}]■[/{fade_off[i]}]"
+                elif i == 4:
+                    screen[y][x] = f"[{fade_off[i]}]■[/{fade_off[i]}]"
                 else:
-                    screen[y][x] = "[#32a852]■[/#32a852]"
+                    screen[y][x] = f"[{fade_off[-1]}]■[/{fade_off[-1]}]"
 
             # Convert to text output
             out = "\n".join("".join(row) for row in screen)
             self.update(out)
-
-            # --------------- FRAME DELAY --------------------------
 
             await asyncio.sleep(delay)

@@ -15,6 +15,10 @@ from ..utils import (
 class Search(Input):
     """Search note widget."""
 
+    BINDINGS = [
+        ("escape", "clear", "Clear"),
+    ]
+
     sidebar = reactive(None)
 
     def on_mount(self):
@@ -25,8 +29,11 @@ class Search(Input):
 
     def action_submit(self) -> None:
         """Submit search note."""
-
         self.screen.focus_next("Sidebar")
+
+    def action_clear(self) -> None:
+        """Clear search note."""
+        self.value = ""
 
 
 class Sidebar(Tree, can_focus=True):
@@ -130,7 +137,6 @@ class Sidebar(Tree, can_focus=True):
         has_children = len(self.cursor_node.children) > 0
 
         if not has_children:
-            #self.app.query_one("#stats").is_animating = True
             self.screen.query_one("#search").can_focus = False
             self.screen.query_one("Content").disabled = False
             self.screen.query_one("#title-input").disabled = False

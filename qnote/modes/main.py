@@ -41,7 +41,6 @@ class MainScreen(Screen):
         category_input = self.screen.query_one("#category-input")
         title_input = self.screen.query_one("#title-input")
 
-
         if not node.node.children:
             try:
                 content.border_title = "Content"
@@ -72,5 +71,5 @@ class MainScreen(Screen):
         return True
 
 
-    def _on_screen_resume(self):  #TODO: changing settings
+    def _on_screen_resume(self):
         self.query_one(Stats).lumen.play_animation(get_setting("lumen"))
