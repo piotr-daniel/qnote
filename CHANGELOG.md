@@ -1,15 +1,15 @@
-## Unreleased
+## [0.1.0] - 2025-12-09
 ### Added
 - Search function to filter the Tree with matching results
-- Setting screen with Lumen and Theme selection
-- 'Snake' lumen
+- Settings screen with Lumen and Theme selection, saving preferences
+- New 'Snake' lumen
 
 ### Changed
 - Moved CHANGELOG to the root
 - Change 'cancel note edit' hk to esc 
 
 ### Fixed
-
+- Catch IndexError on deleting the last node
 
 ### Removed
 

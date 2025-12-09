@@ -3,7 +3,6 @@ from textual.containers import Horizontal, Vertical, VerticalScroll
 from textual.screen import Screen
 from textual.widgets import Footer, Header
 
-
 from ..utils import get_setting
 from ..widgets.content import Content
 from ..widgets.sidebar import Sidebar, Search
@@ -32,7 +31,6 @@ class MainScreen(Screen):
                 yield Stats(id="stats")
                 yield Content(classes="inactive", id="content")
 
-
     def on_tree_node_highlighted(self, node) -> None:
         """Show details of note highlighted note."""
 
@@ -59,17 +57,14 @@ class MainScreen(Screen):
 
             self.screen.query_one("Stats").load_data(node.node)
 
-
     def action_search_note(self) -> None:
         self.screen.focus_next("#search")
-
 
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
         """Check if an action may run."""
         if action == "search_note" and (self.screen.query_one("#content-input").has_focus or self.screen.query_one("#search").has_focus):
             return False
         return True
-
 
     def _on_screen_resume(self):
         self.query_one(Stats).lumen.play_animation(get_setting("lumen"))

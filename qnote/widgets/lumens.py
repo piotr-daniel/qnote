@@ -8,7 +8,6 @@ class Lumen(Static, can_focus=False):
     """Animation display widget."""
 
     current_worker = None
-
     rain_chars = list("abcdefghijklmnopqrstuvwxyz0123456789-)(;@#~óśćźż")
 
     async def on_mount(self):
@@ -17,10 +16,6 @@ class Lumen(Static, can_focus=False):
     def on_unmount(self):
         if self.current_worker:
             self.current_worker.cancel()
-
-    # ---------------------------------------------------------
-    # Animation switching API
-    # ---------------------------------------------------------
 
     def play_animation(self, name: str):
         """Switch to a different animation by name."""
@@ -50,13 +45,13 @@ class Lumen(Static, can_focus=False):
             name=name,
         )
 
-
     # No Animation
-    async def no_animation(self):
-        """Simple placeholder animation."""
-        self.update(f"[orange]QNote Static Logo")
-        # TODO: a static QNote logo
-
+    async def no_animation(self, width: int = 65, height: int = 10):
+        """Simple static animation."""
+        text = "QNote v0.1.0"
+        screen = [[" " for _ in range(width)] for _ in range(height)]
+        screen[4] = [_ for _ in text]
+        self.update("\n".join("".join(row) for row in screen))
 
     # Lumen Animation 1 — Letter Rain (Standard QNote)
     async def qnote_animation(
@@ -120,7 +115,6 @@ class Lumen(Static, can_focus=False):
             self.update("\n".join("".join(row) for row in screen))
             await asyncio.sleep(0.15)
 
-
     # Animation 2 — Placeholder Pulse
     async def pulse_animation(self, width: int = 65, height: int = 10):
         """Simple placeholder animation."""
@@ -165,7 +159,6 @@ class Lumen(Static, can_focus=False):
             frame += 1
             await asyncio.sleep(0.5)
 
-
     # Animation 3 — Placeholder Waves
     async def wave_animation(self):
         """Simple placeholder scrolling wave."""
@@ -181,7 +174,13 @@ class Lumen(Static, can_focus=False):
         """Autonomous snake game animation."""
 
         snake = [(width // 2, height // 2)]
-        food = (randint(1, width - 2), randint(1, height - 2))
+
+        def spawn_food():
+            if (randint(1, width - 2), randint(1, height - 2)) not in snake:
+                return (randint(1, width - 2), randint(1, height - 2))
+            else:
+                return spawn_food()
+        food = spawn_food()
         length = 5
 
         while True:
@@ -190,7 +189,7 @@ class Lumen(Static, can_focus=False):
             food_x, food_y = food
             new_head = snake[0]
 
-            if head_x > food_x:  #TODO: avoid itself
+            if head_x > food_x:
                 new_head = (head_x - 1, head_y)
             if head_x < food_x:
                 new_head = (head_x + 1, head_y)
@@ -205,10 +204,10 @@ class Lumen(Static, can_focus=False):
             # If snake eats food
             if new_head == food and length < max_length:
                 length += 1
-                food = (randint(1, width - 2), randint(1, height - 2))
+                food = spawn_food()
             if new_head == food and length == max_length:
                 length = 5
-                food = (randint(1, width - 2), randint(1, height - 2))
+                food = spawn_food()
             else:
                 snake = snake[:length]
 
@@ -217,9 +216,9 @@ class Lumen(Static, can_focus=False):
 
             # Draw food
             fx, fy = food
-            screen[fy][fx] = "[red]●[/red]"
+            screen[fy][fx] = "[#C5C5C5]■[/#C5C5C5]"
 
-            # Draw snake (head highlighted)
+            # Draw snake
             for i, (x, y) in enumerate(snake):
                 if i == 0:
                     screen[y][x] = f"[{fade_off[i]}]■[/{fade_off[i]}]"

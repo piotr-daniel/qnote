@@ -16,7 +16,7 @@ class Search(Input):
     """Search note widget."""
 
     BINDINGS = [
-        ("escape", "clear", "Clear"),
+        ("ctrl+delete", "clear", "Clear"),
     ]
 
     sidebar = reactive(None)
@@ -118,7 +118,11 @@ class Sidebar(Tree, can_focus=True):
             delete_note(note_id)
             self.update_tree()
             self.select_node(None)
-            self.move_cursor_to_line(cursor_line-1)
+            try:
+                self.move_cursor_to_line(cursor_line-1)
+            except IndexError:
+                # catch deleting last node of a parent, add log
+                self.move_cursor_to_line(0)
             self.refresh()
 
     def action_check_delete_note(self) -> None:

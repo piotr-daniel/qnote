@@ -19,7 +19,6 @@ class Stats(Static, can_focus=False):
 
     note_id = reactive(None)
 
-
     def compose(self) -> ComposeResult:
         with Horizontal():
             with Vertical():
@@ -39,7 +38,6 @@ class Stats(Static, can_focus=False):
                 with HorizontalGroup():
                     yield self.lumen
 
-
     def load_data(self, data: object) -> None:
         """Load note content to the widget."""
         try:
@@ -51,7 +49,6 @@ class Stats(Static, can_focus=False):
         except TypeError:
             pass
             # TODO: logging
-
 
     def on_mount(self) -> None:
         self.border_title = "Stats"

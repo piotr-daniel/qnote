@@ -97,7 +97,7 @@ def get_note(note_id):
 
 
 def get_notes(text: str=None) -> list:
-    """Get all notes from database."""
+    """Get all notes from database or filter by text."""
     with get_connection() as conn:
         if text:
             cursor = conn.execute(

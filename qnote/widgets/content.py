@@ -81,7 +81,7 @@ class Content(Widget):
         self.search.can_focus = True
         self.sidebar.can_focus = True
         self.sidebar.update_tree(self.search.value)
-        self.screen.focus_next("#sidebar").refresh()
+        self.screen.focus_next("Sidebar").refresh()
 
         self.call_later(self._reselect)
         self.call_later(self._save_confirm_visual)
