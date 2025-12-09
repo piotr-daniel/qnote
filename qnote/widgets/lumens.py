@@ -225,12 +225,12 @@ class Lumen(Static, can_focus=False):
                     screen[y][x] = f"[{fade_off[i]}]■[/{fade_off[i]}]"
                 elif i == 1:
                     screen[y][x] = f"[{fade_off[i]}]■[/{fade_off[i]}]"
-                elif i == 2:
-                    screen[y][x] = f"[{fade_off[i]}]■[/{fade_off[i]}]"
-                elif i == 3:
-                    screen[y][x] = f"[{fade_off[i]}]■[/{fade_off[i]}]"
-                elif i == 4:
-                    screen[y][x] = f"[{fade_off[i]}]■[/{fade_off[i]}]"
+                elif i == 2 or i == 3:
+                    screen[y][x] = f"[{fade_off[2]}]■[/{fade_off[2]}]"
+                elif i == 4 or i == 5:
+                    screen[y][x] = f"[{fade_off[3]}]■[/{fade_off[3]}]"
+                elif i == 6 or i == 7:
+                    screen[y][x] = f"[{fade_off[4]}]■[/{fade_off[4]}]"
                 else:
                     screen[y][x] = f"[{fade_off[-1]}]■[/{fade_off[-1]}]"
 
