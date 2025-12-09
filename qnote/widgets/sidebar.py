@@ -3,14 +3,37 @@ from textual.app import ComposeResult
 from textual.containers import Grid
 from textual.reactive import reactive
 from textual.screen import ModalScreen
-from textual.widgets import Button, Label, Tree
+from textual.widgets import Button, Input, Label, Tree
 
 from ..utils import (
     add_note,
     delete_note,
-    get_categories,
     get_notes,
 )
+
+
+class Search(Input):
+    """Search note widget."""
+
+    BINDINGS = [
+        ("ctrl+delete", "clear", "Clear"),
+    ]
+
+    sidebar = reactive(None)
+
+    def on_mount(self):
+        self.sidebar = self.screen.query_one('Sidebar')
+
+    def on_input_changed(self):
+        self.sidebar.update_tree(self.value)
+
+    def action_submit(self) -> None:
+        """Submit search note."""
+        self.screen.focus_next("Sidebar")
+
+    def action_clear(self) -> None:
+        """Clear search note."""
+        self.value = ""
 
 
 class Sidebar(Tree, can_focus=True):
@@ -31,15 +54,20 @@ class Sidebar(Tree, can_focus=True):
 
     def on_focus(self) -> None:
         self.screen.query_one("Content").disabled = True
-        self.screen.query_one("Content").add_class("inactive")
-        self.update_tree()
+        self.update_tree(self.screen.query_one("#search").value)
 
-    def update_tree(self):
+    def update_tree(self, text: str=None):
         self.clear()
-        categories = get_categories()
+
+        notes = get_notes(text) if text else get_notes()
+        categories = list(dict.fromkeys([n[3] for n in notes]))
+        categories.sort()
+
+        self.can_focus = False if not notes else True
+
         for category in categories:
             cat = self.root.add(category, expand=True)
-            for note in get_notes():
+            for note in notes:
                 if note[3] == category:
                     cat.add_leaf(
                         f"{note[1]}{' ' * (45-len(note[1]))} [{datetime.strptime(note[6], "%Y-%m-%d %H:%M:%S").date()}]",
@@ -90,7 +118,11 @@ class Sidebar(Tree, can_focus=True):
             delete_note(note_id)
             self.update_tree()
             self.select_node(None)
-            self.move_cursor_to_line(cursor_line-1)
+            try:
+                self.move_cursor_to_line(cursor_line-1)
+            except IndexError:
+                # catch deleting last node of a parent, add log
+                self.move_cursor_to_line(0)
             self.refresh()
 
     def action_check_delete_note(self) -> None:
@@ -109,7 +141,7 @@ class Sidebar(Tree, can_focus=True):
         has_children = len(self.cursor_node.children) > 0
 
         if not has_children:
-            self.app.query_one("#stats").is_animating = True
+            self.screen.query_one("#search").can_focus = False
             self.screen.query_one("Content").disabled = False
             self.screen.query_one("#title-input").disabled = False
             self.screen.query_one("#category-input").disabled = False

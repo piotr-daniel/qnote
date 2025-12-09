@@ -1,4 +1,6 @@
 import sqlite3
+import json
+
 from appdirs import user_data_dir
 from datetime import datetime
 from pathlib import Path
@@ -7,6 +9,7 @@ from pathlib import Path
 DATA_DIR = Path(user_data_dir("qnote"))
 DATA_FILE = DATA_DIR / "data.db"
 
+SETTINGS = {}
 
 def get_connection():
     DATA_DIR.mkdir(parents=True, exist_ok=True)
@@ -31,10 +34,19 @@ def init_db():
         )
         """)
 
+        conn.execute("""
+        CREATE TABLE IF NOT EXISTS settings (
+            key TEXT PRIMARY KEY,
+            value TEXT
+        )
+        """)
+
 
 def add_note(title: str, content: str, category: str, tags: list = None):
     """Add a new note to database."""
-    tags_str = ",".join(tags) if tags else None
+
+    tags_json = json.dumps(tags) if tags else None
+
     with get_connection() as conn:
         conn.execute(
             "INSERT INTO notes (title, content, category, tags, updated) VALUES (?, ?, ?, ?, ?)",
@@ -42,7 +54,7 @@ def add_note(title: str, content: str, category: str, tags: list = None):
                 title,
                 content,
                 category,
-                tags_str,
+                tags_json,
                 datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             ),
         )
@@ -84,10 +96,16 @@ def get_note(note_id):
         return cursor.fetchone()
 
 
-def get_notes():
-    """Get all notes from database."""
+def get_notes(text: str=None) -> list:
+    """Get all notes from database or filter by text."""
     with get_connection() as conn:
-        cursor = conn.execute("SELECT * FROM notes ORDER BY updated DESC;")
+        if text:
+            cursor = conn.execute(
+                "SELECT * FROM notes WHERE title LIKE ? OR category LIKE ? OR content LIKE ? ORDER BY updated DESC;",
+                ("%"+text+"%", "%"+text+"%", "%"+text+"%")
+            )
+        else:
+            cursor = conn.execute("SELECT * FROM notes ORDER BY updated DESC;")
         return cursor.fetchall()
 
 
@@ -100,3 +118,23 @@ def get_categories():
             categories.append("New Notes")
         categories.sort()
         return categories
+
+
+def load_all_settings():
+    with get_connection() as conn:
+        cursor = conn.execute("SELECT key,value FROM settings")
+        for key, value in cursor:
+            try:
+                SETTINGS[key] = json.loads(value)
+            except IndexError:
+                SETTINGS[key] = value
+
+
+def get_setting(key, default=None):
+    return SETTINGS.get(key, default)
+
+
+def set_setting(key, value):
+    SETTINGS[key] = value
+    with get_connection() as conn:
+        conn.execute("REPLACE INTO settings VALUES (?, ?)", (key, json.dumps(value)))

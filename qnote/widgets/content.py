@@ -27,7 +27,7 @@ class Content(Widget):
 
     BINDINGS = [
         ("ctrl+s", "save_note", "Save Note"),
-        ("ctrl+delete", "cancel_edit", "Cancel"),
+        ("escape", "cancel_edit", "Cancel"),
     ]
 
     title_input = Input(id="title-input", compact=True, disabled=True)
@@ -46,6 +46,7 @@ class Content(Widget):
     note_id = reactive(None)
     node = None
 
+    search: Widget | None = None
     sidebar: Widget | None = None
     stats: Widget | None = None
 
@@ -63,8 +64,9 @@ class Content(Widget):
 
     def on_mount(self) -> None:
         self.border_title = "Content"
-        self.sidebar = self.app.query_one("#sidebar")
-        self.stats = self.app.query_one("#stats")
+        self.search = self.screen.query_one("#search")
+        self.sidebar = self.screen.query_one("#sidebar")
+        self.stats = self.screen.query_one("#stats")
 
     def on_focus(self) -> None:
         self.disabled = False
@@ -76,9 +78,10 @@ class Content(Widget):
         update_note_title(self.note_id, self.title_input.value)
         update_note_category(self.note_id, self.category_input.value)
 
+        self.search.can_focus = True
         self.sidebar.can_focus = True
-        self.sidebar.update_tree()
-        self.screen.focus_next("#sidebar").refresh()
+        self.sidebar.update_tree(self.search.value)
+        self.screen.focus_next("Sidebar").refresh()
 
         self.call_later(self._reselect)
         self.call_later(self._save_confirm_visual)
@@ -116,6 +119,7 @@ class Content(Widget):
         """Cancel edit."""
 
         self.border_title = "Content"
+        self.search.can_focus = True
         self.sidebar.can_focus = True
         self.screen.focus_next("#sidebar")
         node_line = self.sidebar.cursor_node.line
