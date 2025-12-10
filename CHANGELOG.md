@@ -7,6 +7,10 @@
 
 ### Removed
 
+## [0.1.3] - 2025-12-10
+### Fixed
+- Default notes category if none found
+
 ## [0.1.2] - 2025-12-10
 ### Fixed
 - New instance error

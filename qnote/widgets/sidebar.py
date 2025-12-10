@@ -50,7 +50,7 @@ class Sidebar(Tree, can_focus=True):
         self.guide_depth = 3
         self.border_title = "Notes"
         self.update_tree()
-        #self.move_cursor_to_line(0)
+        self.move_cursor_to_line(0)
 
     def on_focus(self) -> None:
         self.screen.query_one("Content").disabled = True
@@ -61,6 +61,7 @@ class Sidebar(Tree, can_focus=True):
 
         notes = get_notes(text) if text else get_notes()
         categories = list(dict.fromkeys([n[3] for n in notes]))
+        categories = ["New Notes"] if not categories else categories
         categories.sort()
 
         self.can_focus = False if not notes else True

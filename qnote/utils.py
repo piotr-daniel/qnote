@@ -109,6 +109,7 @@ def get_notes(text: str=None) -> list:
         return cursor.fetchall()
 
 
+# depreciated
 def get_categories():
     """Get distinct categories from database. If there are no categories, return General as default."""
     with get_connection() as conn:
