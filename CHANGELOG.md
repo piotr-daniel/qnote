@@ -1,3 +1,7 @@
+## [0.1.1] - 2025-12-10
+### Fixed
+- Disable searchbar during new note creation
+
 ## [0.1.0] - 2025-12-09
 ### Added
 - Search function to filter the Tree with matching results
@@ -10,9 +14,6 @@
 
 ### Fixed
 - Catch IndexError on deleting the last node
-
-### Removed
-
 
 ---
 
