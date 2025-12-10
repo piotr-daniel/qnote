@@ -7,6 +7,10 @@
 
 ### Removed
 
+## [0.1.4] - 2025-12-10
+### Fixed
+- Unable to focus sidebar for new instance
+
 ## [0.1.3] - 2025-12-10
 ### Fixed
 - Default notes category if none found

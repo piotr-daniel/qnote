@@ -64,8 +64,6 @@ class Sidebar(Tree, can_focus=True):
         categories = ["New Notes"] if not categories else categories
         categories.sort()
 
-        self.can_focus = False if not notes else True
-
         for category in categories:
             cat = self.root.add(category, expand=True)
             for note in notes:
