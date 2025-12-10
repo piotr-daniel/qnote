@@ -1,3 +1,16 @@
+## [Unreleased]
+### Added
+
+### Changed
+
+### Fixed
+
+### Removed
+
+## [0.1.2] - 2025-12-10
+### Fixed
+- New instance error
+
 ## [0.1.1] - 2025-12-10
 ### Fixed
 - Disable searchbar during new note creation

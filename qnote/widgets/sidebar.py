@@ -50,7 +50,7 @@ class Sidebar(Tree, can_focus=True):
         self.guide_depth = 3
         self.border_title = "Notes"
         self.update_tree()
-        self.move_cursor_to_line(0)
+        #self.move_cursor_to_line(0)
 
     def on_focus(self) -> None:
         self.screen.query_one("Content").disabled = True
