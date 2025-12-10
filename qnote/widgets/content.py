@@ -13,6 +13,7 @@ class ContentInput(TextArea):
     """Note content widget."""
 
     def on_focus(self) -> None:
+        self.screen.query_one("Search").can_focus = False
         self.parent.remove_class("inactive")
         self.action_cursor_line_end()
         self.action_cursor_page_down()
