@@ -6,7 +6,7 @@ from textual.reactive import reactive
 from textual.widget import Widget
 from textual.widgets import Input, Label, Rule, TextArea
 
-from ..utils import update_note_category, update_note_content, update_note_title
+from qnote.utils import update_note_category, update_note_content, update_note_title
 
 
 class ContentInput(TextArea):

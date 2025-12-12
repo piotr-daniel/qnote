@@ -6,7 +6,7 @@ from textual.screen import Screen
 from textual.widget import Widget
 from textual.widgets import Footer, Label, Select, Header, Rule
 
-from ..utils import get_setting, set_setting
+from qnote.utils import get_setting, set_setting
 
 class LumenSelect(Widget):
 

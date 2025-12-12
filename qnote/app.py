@@ -1,9 +1,9 @@
 from textual.app import App
 
-from . import themes
-from .modes.settings import SettingsScreen
-from .modes.main import MainScreen
-from .utils import init_db, load_all_settings, get_setting
+from qnote import themes
+from qnote.modes.settings import SettingsScreen
+from qnote.modes.main import MainScreen
+from qnote.utils import init_db, load_all_settings, get_setting
 
 
 class QnoteApp(App):

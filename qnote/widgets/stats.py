@@ -5,7 +5,7 @@ from textual.containers import Horizontal, HorizontalGroup, Vertical
 from textual.reactive import reactive
 from textual.widgets import Label, Static
 
-from .lumens import Lumen
+from qnote.widgets.lumens import Lumen
 
 
 class Stats(Static, can_focus=False):

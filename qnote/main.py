@@ -1,5 +1,5 @@
-from .app import QnoteApp
-from .utils import init_db
+from qnote.app import QnoteApp
+from qnote.utils import init_db
 
 
 def main():

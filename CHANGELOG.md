@@ -7,6 +7,11 @@
 
 ### Removed
 
+## [0.1.5] - 2025-12-12
+### Changed
+- Change relative paths to absolute
+- Minor README improvements
+
 ## [0.1.4] - 2025-12-10
 ### Fixed
 - Unable to focus sidebar for new instance

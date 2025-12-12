@@ -3,10 +3,10 @@ from textual.containers import Horizontal, Vertical, VerticalScroll
 from textual.screen import Screen
 from textual.widgets import Footer, Header
 
-from ..utils import get_setting
-from ..widgets.content import Content
-from ..widgets.sidebar import Sidebar, Search
-from ..widgets.stats import Stats
+from qnote.utils import get_setting
+from qnote.widgets.content import Content
+from qnote.widgets.sidebar import Sidebar, Search
+from qnote.widgets.stats import Stats
 
 
 class MainScreen(Screen):

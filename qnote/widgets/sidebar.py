@@ -5,7 +5,7 @@ from textual.reactive import reactive
 from textual.screen import ModalScreen
 from textual.widgets import Button, Input, Label, Tree
 
-from ..utils import (
+from qnote.utils import (
     add_note,
     delete_note,
     get_notes,

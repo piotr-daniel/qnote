@@ -1,28 +1,39 @@
 # QNote
 
-QNote is a terminal-based, local-first, note-taking app powered by [Textual](https://github.com/Textualize/textual).  
-It provides a fast, intuitive, and visually appealing way to manage your notes directly in the terminal.
+QNote is a terminal-based, local-first note-taking app powered by [Textual](https://github.com/Textualize/textual).
+It provides a fast, intuitive, keyboard-driven way to capture and manage notes — all without leaving your terminal.
 
 [![Demo](demo.gif)](demo.mp4)
 ---
 
 ## Why another note-taking app?
 
-To solve the bane of my life!
+Because taking a quick note shouldn’t feel like a project.
 
-I often struggle to just make a note, simply, no fuss, without spending ages to decide which section of other note-taking
-apps to insert it or spending even more time trying to find it later.
+Most note apps make you:
+- choose a notebook
+- choose a folder
+- choose a tag
+- choose a title
+- confirm sync
+- worry about the cloud
 
-Sounds familiar? If so, great, *QNote* is the solution for you! - No need to register, log in, and sign your life away
-to never ending data collection, etc... etc...
+…and somehow your note still gets lost later
 
-The mission was simple: make note-taking quick, but manageable!
-- One command install
-- One command launch
-- One hotkey and type away
+QNote fixes that by staying out of your way.
 
-It's very easy to move your note around or create new categories and to manage it's content.
-The app provides metadata which helps you understand what your note is.
+- No accounts
+- No cloud
+- No decisions
+- No ceremony
+
+Just:
+
+- One command to install
+- One command to launch (or startup)
+- One hotkey → type → done
+
+Your notes stay local, fast, and easy to navigate with simple categories and metadata that help you keep things tidy without effort.
 
 ---
 
@@ -51,4 +62,6 @@ qnote
 
 ---
 
-If you like the project, please consider giving it a Star!
+### Support the Project
+
+If you find QNote useful, consider starring the repository - it helps more people discover it!
